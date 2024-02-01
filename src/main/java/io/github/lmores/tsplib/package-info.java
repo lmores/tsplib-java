@@ -23,13 +23,13 @@
  * Since the number of nodes can be high, when the edge weights format is
  * different from EXPLICT, weight values are not stored in memory when an
  * instance is loaded; instead, they are generated on the fly each time
- * the method {@link TspInstance#getEdgeWeight} is called.
- * If you need a in memory copy of all the edge weights you can call the
- * methods {@link TspInstance#materializeEdgeWeights} or
- * {@link TspInstance#materializeEdgeWeightsMatrix}.
+ * the method {@link io.github.lmores.tsplib.tsp.TspInstance#getEdgeWeight}
+ * is called.
+ * You can obtain an in memory copy of all the edge weights using the methods
+ * {@link io.github.lmores.tsplib.tsp.TspInstance#materializeEdgeWeights} or
+ * {@link io.github.lmores.tsplib.tsp.TspInstance#materializeEdgeWeightsMatrix}.
  *
  * @author   Lorenzo Moreschini
- * @version  %I%
  * @since    0.0.1
  */
 package io.github.lmores.tsplib;

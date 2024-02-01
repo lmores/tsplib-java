@@ -5,14 +5,13 @@ package io.github.lmores.tsplib;
  * instances.
  *
  * @author   Lorenzo Moreschini
- * @version  %I%
  * @since    0.0.1
  */
 public class TsplibUtil {
-  /** Earth radius used in the {@link haversineDistance} method. */
+  /** Earth radius used in the {@link roundedHaversineDistance} method. */
   public static final double EARTH_RADIUS = 6378.388;
 
-  /** Value of pi used in the {@link haversineDistance} method. */
+  /** Value of pi used in the {@link roundedHaversineDistance} method. */
   public static final double PI = 3.141592;
 
   /** This class contains only static methods and no instance is allowed. */
@@ -158,7 +157,7 @@ public class TsplibUtil {
    * @param y2  the y-coordinate of the second point
    * @return    the manhattan (L1) distance rounded to the nearest integer
    */
-  public static int manhattanDistance(
+  public static int roundedManhattanDistance(
       final double x1, final double y1, final double x2, final double y2
   ) {
     final double dx = Math.abs(x1 - x2);
@@ -179,7 +178,7 @@ public class TsplibUtil {
    * @param z2  the z-coordinate of the second point
    * @return    the manhattan (L1) distance rounded to the nearest integer
    */
-  public static int manhattanDistance(
+  public static int roundedManhattanDistance(
       final double x1, final double y1, final double z1,
       final double x2, final double y2, final double z2
   ) {
@@ -200,7 +199,7 @@ public class TsplibUtil {
    * @param y2  the y-coordinate of the second point
    * @return    the Chebyshev (L&infin;) distance rounded to the nearest integer
    */
-  public static int maxDistance(
+  public static int roundedChebyshevDistance(
       final double x1, final double y1, final double x2, final double y2
   ) {
     final double dx = Math.abs(x1 - x2);
@@ -220,7 +219,7 @@ public class TsplibUtil {
    * @param z2  the z-coordinate of the second point
    * @return    the Chebyshev (L&infin;) distance rounded to the nearest integer
    */
-  public static int maxDistance(
+  public static int roundedChebyshevDistance(
       final double x1, final double y1, final double z1,
       final double x2, final double y2, final double z2
   ) {
@@ -246,7 +245,7 @@ public class TsplibUtil {
    * @return    the distance in km
    * @see <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp95.pdf">TSPLIB official documentation</a>
    */
-  public static int haversineDistance(
+  public static int roundedHaversineDistance(
       final double x1, final double y1, final double x2, final double y2
   ) {
     final double lat1 = ddmmToRadians(x1);

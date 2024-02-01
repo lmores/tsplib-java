@@ -1,10 +1,12 @@
-package io.github.lmores.tsplib;
+package io.github.lmores.tsplib.tsp;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import io.github.lmores.tsplib.TsplibArchive;
 
 
 public class TestTspInstance {
@@ -26,7 +28,7 @@ public class TestTspInstance {
   // ==========================================================================
 
   private double computeCanonicalTourLength(final TspInstance instance) {
-    final int lastNodeIdx = instance.nNodes - 1;
+    final int lastNodeIdx = instance.getDimension() - 1;
 
     double length = instance.getEdgeWeight(0, lastNodeIdx);
     for (int i = 0; i < lastNodeIdx; ++i) {

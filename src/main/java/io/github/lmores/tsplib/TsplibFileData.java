@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import io.github.lmores.tsplib.TsplibFileFormat.DisplayDataType;
-import io.github.lmores.tsplib.TsplibFileFormat.EdgeFormatData;
+import io.github.lmores.tsplib.TsplibFileFormat.EdgeDataFormat;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightFormat;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 import io.github.lmores.tsplib.TsplibFileFormat.TsplibFileFormatException;
@@ -23,28 +23,38 @@ import io.github.lmores.tsplib.TsplibFileFormat.ProblemType;
  *
  * This class is completely implementation-dependent and not available externally.
  *
+ * @param name              the name of the instance
+ * @param type              the type of problem
+ * @param comment           the comment associated with the instance
+ * @param dimension         the number of nodes
+ * @param depots            declared depots
+ * @param fixedEdges        list of fixed edges
+ * @param nodeCoords        node coordinates
+ * @param edgeWeights       the edge weights
+ * @param displayCoords     node coordinates for graph representation only
+ * @param edgeWeightType    how edge weights are computed
+ * @param edgeWeightFormat  how edge weight are provided
+ * @param edgeFormatData    how edges are provided
+ * @param nodeCoordType     how node coordinates are provided
+ * @param dataDisplayType   how nodes should be displayed
  * @author   Lorenzo Moreschini
- * @version  %I%
  * @since    0.0.1
  */
-record TsplibFileData(
-  // Specification part
+public record TsplibFileData(
   String name,
   ProblemType type,
   String comment,
   int dimension,
-  EdgeWeightType edgeWeightType,
-  EdgeWeightFormat edgeWeightFormat,
-  EdgeFormatData edgeFormatData,
-  NodeCoordType nodeCoordType,
-  DisplayDataType dataDisplayType,
-
-  // Data part
-  double[][] nodeCoords,
   int[] depots,
   int[][] fixedEdges,
+  int[] edgeWeights,
+  double[][] nodeCoords,
   double[][] displayCoords,
-  double[] edges
+  EdgeWeightType edgeWeightType,
+  EdgeWeightFormat edgeWeightFormat,
+  EdgeDataFormat edgeFormatData,
+  NodeCoordType nodeCoordType,
+  DisplayDataType dataDisplayType
 ) {
 
   /**
@@ -52,7 +62,7 @@ record TsplibFileData(
    *
    * @param file  a file in TSPLIB format
    * @return      the instance data
-   * @throws IOException
+   * @throws IOException  if a I/O error occurs
    */
   public static TsplibFileData read(final Path file) throws IOException {
     try (final InputStream is = new FileInputStream(file.toFile())) {
@@ -69,7 +79,7 @@ record TsplibFileData(
    *
    * @param is  the source in TSPLIB format
    * @return    the instance data
-   * @throws IOException
+   * @throws IOException  if an I/O error occurs
    */
   public static TsplibFileData read(final InputStream is) throws IOException {
     // Specification part
@@ -79,16 +89,16 @@ record TsplibFileData(
     int dimension = -1;
     EdgeWeightType edgeWeightType = null;
     EdgeWeightFormat edgeWeightFormat = null;
-    EdgeFormatData edgeFormatData = null;
+    EdgeDataFormat edgeFormatData = null;
     NodeCoordType nodeCoordType = null;
     DisplayDataType displayDataType = null;
 
     // Data part
-    double[][] nodeCoords = null;
     int[] depots = null;
     int[][] fixedEdges = null;
+    int[] edgeWeights = null;
+    double[][] nodeCoords = null;
     double[][] displayCoords = null;
-    double[] edgeWeights = null;
 
     try (
         is;
@@ -110,7 +120,7 @@ record TsplibFileData(
           case "DIMENSION" -> { dimension = sc.nextInt(); }
           case "EDGE_WEIGHT_TYPE" -> { edgeWeightType = EdgeWeightType.valueOf(sc.next()); }
           case "EDGE_WEIGHT_FORMAT" -> { edgeWeightFormat = EdgeWeightFormat.valueOf(sc.next()); }
-          case "EDGE_FORMAT_DATA" -> { edgeFormatData = EdgeFormatData.valueOf(sc.next()); }
+          case "EDGE_FORMAT_DATA" -> { edgeFormatData = EdgeDataFormat.valueOf(sc.next()); }
           case "NODE_COORD_TYPE" -> { nodeCoordType = NodeCoordType.valueOf(sc.next()); }
           case "DISPLAY_DATA_TYPE" -> { displayDataType = DisplayDataType.valueOf(sc.next()); }
 
@@ -283,7 +293,7 @@ record TsplibFileData(
 
           case "EDGE_WEIGHT_SECTION" -> {
             final int nEdges = dimension * (dimension - 1) / 2;
-            edgeWeights = new double[nEdges];
+            edgeWeights = new int[nEdges];
 
             switch (edgeWeightFormat) {
               case FULL_MATRIX -> {
@@ -445,8 +455,8 @@ record TsplibFileData(
     }
 
     return new TsplibFileData(
-        name, type, comment, dimension, edgeWeightType, edgeWeightFormat, edgeFormatData,
-        nodeCoordType, displayDataType, nodeCoords, depots, fixedEdges, displayCoords, edgeWeights
+        name, type, comment, dimension, depots, fixedEdges, edgeWeights, nodeCoords, displayCoords,
+        edgeWeightType, edgeWeightFormat, edgeFormatData, nodeCoordType, displayDataType
     );
   }
 }

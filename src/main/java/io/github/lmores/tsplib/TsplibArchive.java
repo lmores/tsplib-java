@@ -11,16 +11,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import io.github.lmores.tsplib.tsp.TspInstance;
+
 /**
- * A collection of utilities to load TSPLIB instances shipped with this Java
+ * A collection of utilities to load the TSPLIB instances shipped with this
  * package.
  *
  * @author   Lorenzo Moreschini
- * @version  %I%
  * @since    0.0.1
  */
 public class TsplibArchive {
-  /** Path to the archive containing all TSP instances included in the TSPLIB. */
+  /** Path to the archive containing all TSP instances of the TSPLIB. */
   private static final Path TSP_ARCHIVE;
   static {
     try {
@@ -64,14 +65,13 @@ public class TsplibArchive {
    * The extension of the included files is either {@code .tsp},
    * {@code [.opt].tour} or {@code .problems}.
    *
-   * @return  the file names
-   * @throws  IOException
-   * @throws  URISyntaxException
+   * @return              the file names
+   * @throws IOException  if an I/O error has occurred
    * @see     <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
    *            The complete official archive
    *          </a>
    */
-  public static String[] extractTspFilenames() throws URISyntaxException, IOException {
+  public static String[] extractTspFilenames() throws IOException {
     try (final ZipFile zip = new ZipFile(TSP_ARCHIVE.toFile())) {
       final List<String> files = new ArrayList<>(256);
       final Enumeration<? extends ZipEntry> entries = zip.entries();
@@ -89,12 +89,11 @@ public class TsplibArchive {
    * The ownership of the input stream is passed to the caller who must
    * properly close it when it is no longer needed.
    *
-   * @param filename  the name of the instance file (e.g. "a280.tsp")
-   * @return          the TSP instance corresponding to the provided filename
-   * @throws IOException
-   * @throws URISyntaxException
+   * @param filename      the name of the instance file (e.g. "a280.tsp")
+   * @return              the TSP instance corresponding to the given filename
+   * @throws IOException  if an I/O error has occurred
    */
-  public static InputStream getTspFileInputStream(final String filename) throws URISyntaxException, IOException {
+  public static InputStream getTspFileInputStream(final String filename) throws IOException {
     final ZipFile archive = getTspArchive();
     final ZipEntry entry = archive.getEntry(filename);
     if (entry == null)  throw new IOException("File '" + filename + "' not found in TSPLIB archive");
@@ -108,12 +107,11 @@ public class TsplibArchive {
    * {@link extractTspFilenames} and it must end in {@code .tsp} (files ending
    * in {@code .tour} or {@code .problems}) are not supported by this function).
    *
-   * @param filename  the name of the instance file (e.g. "a280.tsp")
-   * @return          the TSP instance corresponding to the provided filename
-   * @throws IOException
-   * @throws URISyntaxException
+   * @param filename      the name of the instance file (e.g. "a280.tsp")
+   * @return              the TSP instance corresponding to the given filename
+   * @throws IOException  if an I/O error has occurred
    */
-  public static TspInstance readTspInstance(final String filename) throws URISyntaxException, IOException {
+  public static TspInstance readTspInstance(final String filename) throws IOException {
     return TspInstance.from(TsplibFileData.read(getTspFileInputStream(filename)));
   }
 }

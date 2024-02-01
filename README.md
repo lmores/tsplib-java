@@ -21,7 +21,7 @@ TspInstance instance = TsplibArchive.readTspInstance("a280.tsp");
 instance.getName()            // "a280"
 instance.getType()            // TSP
 instance.getComment()         // "drilling problem (Ludwig)"
-instance.getnNodes()          // 280
+instance.getDimension()       // 280
 instance.getEdgeWeightType()  // EUC_2D
 instance.getEdgeWeight(0, 1)  // 20
 ```
