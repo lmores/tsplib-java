@@ -2,13 +2,17 @@ package io.github.lmores.tsplib;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import io.github.lmores.tsplib.tsp.TspInstance;
@@ -21,15 +25,13 @@ import io.github.lmores.tsplib.tsp.TspInstance;
  * @since    0.0.1
  */
 public class TsplibArchive {
-  /** Path to the archive containing all TSP instances of the TSPLIB. */
-  private static final Path TSP_ARCHIVE;
-  static {
-    try {
-      TSP_ARCHIVE = Path.of(TsplibArchive.class.getResource("tsp.zip").toURI());
-    } catch (final URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
-  }
+  /** Path to the zip archive containing all TSP instances of the TSPLIB. */
+  private static final String TSP_ARCHIVE_RESOURCE = "tsp.zip";
+
+  // public static void main(String[] args) throws IOException {
+  //   final TspInstance inst = readTspInstance("bier127.tsp");
+  //   System.out.println(inst.getName());
+  // }
 
   // TODO: improve
   /** Internal reference to the ZipFile object used to read TSP instances from
@@ -46,18 +48,6 @@ public class TsplibArchive {
   /** This class contains only static methods and no instance is allowed. */
   private TsplibArchive() { /* no-op */ }
 
-  /** Creates a ZipFile instance linked to the internal {@link #TSP_ARCHIVE}
-   * the first this method is called and always returns the same object
-   * thereafter.
-   */
-  private static ZipFile getTspArchive() throws ZipException, IOException {
-    if (tspArchive == null) {
-      tspArchive = new ZipFile(TSP_ARCHIVE.toFile());
-    }
-
-    return tspArchive;
-  }
-
   /**
    * Returns the names of all files inside the TSPLIB archive for the
    * Travelling Salesman Problem available on the TSPLIB official website.
@@ -72,7 +62,7 @@ public class TsplibArchive {
    *          </a>
    */
   public static String[] extractTspFilenames() throws IOException {
-    try (final ZipFile zip = new ZipFile(TSP_ARCHIVE.toFile())) {
+    try (final ZipFile zip = new ZipFile(getTmpTspArchiveFile().toFile())) {
       final List<String> files = new ArrayList<>(256);
       final Enumeration<? extends ZipEntry> entries = zip.entries();
       while (entries.hasMoreElements()) {
@@ -94,10 +84,13 @@ public class TsplibArchive {
    * @throws IOException  if an I/O error has occurred
    */
   public static InputStream getTspFileInputStream(final String filename) throws IOException {
-    final ZipFile archive = getTspArchive();
-    final ZipEntry entry = archive.getEntry(filename);
+    if (tspArchive == null) {
+      tspArchive = new ZipFile(getTmpTspArchiveFile().toFile());
+    }
+
+    final ZipEntry entry = tspArchive.getEntry(filename);
     if (entry == null)  throw new IOException("File '" + filename + "' not found in TSPLIB archive");
-    return archive.getInputStream(entry);
+    return tspArchive.getInputStream(entry);
   }
 
   /**
@@ -112,6 +105,55 @@ public class TsplibArchive {
    * @throws IOException  if an I/O error has occurred
    */
   public static TspInstance readTspInstance(final String filename) throws IOException {
-    return TspInstance.from(TsplibFileData.read(getTspFileInputStream(filename)));
+    try (final ZipFile zip = new ZipFile(getTmpTspArchiveFile().toFile())) {
+      final ZipEntry entry = zip.getEntry(filename);
+      if (entry == null)  throw new IOException("File '" + filename + "' not found in tsp archive");
+      return TspInstance.from(TsplibFileData.read(zip.getInputStream(entry)));
+    }
+  }
+
+  // ===============================================================================================
+  // Private helpers
+  // ===============================================================================================
+
+  private static Path tmpTspArchiveFile = null;
+  private static Path getTmpTspArchiveFile() throws IOException {
+    if (tmpTspArchiveFile != null)  return tmpTspArchiveFile;
+
+    final URI ref;
+    try {
+      ref = TsplibArchive.class.getResource(TSP_ARCHIVE_RESOURCE).toURI();
+    } catch (final URISyntaxException e) {
+      throw new IOException("Cannot locate tsp instance archive", e);
+    }
+    final String scheme = ref.getScheme();
+
+    // When this package is loaded as a .jar file, resources are located inside 
+    // it and the jar archive must be registered as a FileSystem to access them.
+    if ("jar".equalsIgnoreCase(scheme)) {
+      final String[] parts = ref.toString().split("!", 2);
+      try {
+        FileSystems.newFileSystem(URI.create(parts[0]), Collections.emptyMap());
+      } catch (final FileSystemAlreadyExistsException e) { /* no-op */ }
+      
+      final Path tmpDestDir = Path.of(System.getProperty("java.io.tmpdir")).resolve("tsplib");
+      Files.createDirectories(tmpDestDir);
+
+      final Path tmpFile = tmpDestDir.resolve("tsp.zip");
+      Files.deleteIfExists(tmpFile);
+
+      tmpTspArchiveFile = Files.copy(Path.of(ref), tmpFile);
+      try {
+        tmpTspArchiveFile.toFile().deleteOnExit();
+      } catch (final SecurityException e) { /* no-op */ }
+
+    } else if ("file".equalsIgnoreCase(scheme)) {
+      tmpTspArchiveFile = Path.of(ref);
+
+    } else {
+      throw new IOException("Cannot load internal archive 'tsp.zip', unhandled scheme: " + scheme);
+    }
+
+    return tmpTspArchiveFile;
   }
 }

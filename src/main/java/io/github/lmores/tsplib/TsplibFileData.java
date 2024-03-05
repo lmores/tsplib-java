@@ -360,7 +360,7 @@ public record TsplibFileData(
               case LOWER_DIAG_ROW -> {
                 for (int i = 0; i < dimension; ++i) {
                   for (int j = 0; j < i; ++j) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, dimension);
+                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(j, i, dimension);
                     edgeWeights[k] = sc.nextInt();;
                   }
 
@@ -376,7 +376,7 @@ public record TsplibFileData(
               case LOWER_ROW -> {
                 for (int i = 1; i < dimension; ++i) {
                   for (int j = 0; j < i; ++j) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, dimension);
+                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(j, i, dimension);
                     edgeWeights[k] = sc.nextInt();
                   }
                 }
