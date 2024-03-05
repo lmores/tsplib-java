@@ -313,7 +313,7 @@ public abstract class TspInstance {
     final int[][] edgeWeights = new int[dimension][dimension];
     for (int i = 0; i < dimension; ++i) {
       for (int j = i + 1; j < dimension; ++j) {
-        edgeWeights[i][j] = edgeWeights[i][j] = getEdgeWeight(i, j);
+        edgeWeights[i][j] = edgeWeights[j][i] = getEdgeWeight(i, j);
       }
     }
 

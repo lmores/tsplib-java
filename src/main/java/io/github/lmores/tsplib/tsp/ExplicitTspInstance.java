@@ -48,7 +48,7 @@ public class ExplicitTspInstance extends TspInstance {
     for (int i = 0; i < nNodes; ++i) {
       for (int j = i + 1; j < nNodes; ++j) {
         final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, nNodes);
-        weightsMatrix[i][j] = weightsMatrix[i][j] = edgeWeights[k];
+        weightsMatrix[i][j] = weightsMatrix[j][i] = edgeWeights[k];
       }
     }
 
