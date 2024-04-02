@@ -19,7 +19,6 @@ String[] filenames = TsplibArchive.extractTspFilenames();
 
 TspInstance instance = TsplibArchive.readTspInstance("a280.tsp");
 instance.getName()            // "a280"
-instance.getType()            // TSP
 instance.getComment()         // "drilling problem (Ludwig)"
 instance.getDimension()       // 280
 instance.getEdgeWeightType()  // EUC_2D

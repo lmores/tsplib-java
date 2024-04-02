@@ -3,9 +3,15 @@ package io.github.lmores.tsplib;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class TestTsplibArchive {
+
+public class ITTsplibArchive {
+  
+  static {
+    Assertions.assertFalse(System.getProperty("java.class.path").contains("target/classes"));
+  }
+
   @Test
-  public void testArchiveExtraction() {
+  public void testArchiveExtractionFromJarResource() {
     final String[] filenames = Assertions.assertDoesNotThrow(
         () -> TsplibArchive.extractTspFilenames()
     );
