@@ -54,7 +54,8 @@ public record TsplibFileData(
   EdgeWeightFormat edgeWeightFormat,
   EdgeDataFormat edgeFormatData,
   NodeCoordType nodeCoordType,
-  DisplayDataType dataDisplayType
+  DisplayDataType dataDisplayType,
+  int[][] tours
 ) {
 
   /**
@@ -99,6 +100,7 @@ public record TsplibFileData(
     int[] edgeWeights = null;
     double[][] nodeCoords = null;
     double[][] displayCoords = null;
+    int[][] tours = null;
 
     try (
         is;
@@ -445,6 +447,40 @@ public record TsplibFileData(
             throw new TsplibFileFormatException("'EDGE_DATA_SECTION' is not (yet) supported");
           }
 
+          case "TOUR_SECTION" -> {
+            int nodeIdx; 
+            final List<int[]> tmpTours = new ArrayList<>();
+
+            if (dimension < 0) {
+              // The data file does not declare the dimension of the tour (e.g. rd100.opt.tour),
+              final List<Integer> tmpTour = new ArrayList<>(1024);
+              while (sc.hasNext() && (nodeIdx = sc.nextInt()) != -1)  tmpTour.add(nodeIdx);
+
+              dimension = tmpTour.size();
+              final int[] tour = new int[dimension];
+              for (int i = 0; i < dimension; ++i)  tour[i] = tmpTour.get(i);
+              tmpTours.add(tour);
+            }
+
+            while (sc.hasNext() && sc.hasNextInt() && (nodeIdx = sc.nextInt()) != -1) {
+              final int[] tour = new int[dimension];
+              tour[0] = nodeIdx;
+              
+              int i = 0;
+              while (sc.hasNext() && (nodeIdx = sc.nextInt()) != -1)  tour[++i] = nodeIdx;
+
+              if (++i != dimension) {
+                throw new TsplibFileFormatException(
+                    "Tour " + (tmpTours.size() + 1) + " has " + i + " nodes, expected " + dimension
+                ); 
+              }
+
+              tmpTours.add(tour);
+            }
+
+            tours = tmpTours.toArray(new int[tmpTours.size()][]);
+          }
+
           case "EOF" -> { /* no-op */ }
 
           default -> {
@@ -456,7 +492,7 @@ public record TsplibFileData(
 
     return new TsplibFileData(
         name, type, comment, dimension, depots, fixedEdges, edgeWeights, nodeCoords, displayCoords,
-        edgeWeightType, edgeWeightFormat, edgeFormatData, nodeCoordType, displayDataType
+        edgeWeightType, edgeWeightFormat, edgeFormatData, nodeCoordType, displayDataType, tours
     );
   }
 }

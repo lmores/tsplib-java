@@ -1,8 +1,7 @@
 package io.github.lmores.tsplib;
 
 /**
- * Provides common methods used to interact with the data contained in TSPLIB
- * instances.
+ * Provides utilities to interact with the data contained in TSPLIB instances.
  *
  * @author   Lorenzo Moreschini
  * @since    0.0.1
@@ -20,12 +19,12 @@ public class TsplibUtil {
   /**
    * Given the index {@code k} of an array encoding a strict upper diagonal
    * matrix of dimension {@code n}, this method returns the matrix row and
-   * column index (0-based) corresponding to the same entry.
+   * column indexes (0-based) corresponding to the same entry.
    *
    * Since the strict upper diagonal part of a matrix of dimension {@code n}
    * contains {@code n(n-1)/2} elements, this is also the length assumed for
    * the array encoding it, hence it must hold {@code 0 <= k < n(n-1)/2}.
-   * When such requirement is not satisfied, the returned value is undefined.
+   * If such requirement is not satisfied, the behaviour is undefined.
    *
    * @param k  the index of the element in the array
    * @param n  the dimension of the matrix encoded in the array

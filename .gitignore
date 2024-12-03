@@ -44,3 +44,9 @@ buildNumber.properties
 
 # VS Code
 .vscode
+
+# MacOS
+.DS_Store
+
+# Project
+tsplib_data/

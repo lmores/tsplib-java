@@ -5,13 +5,12 @@ import org.junit.jupiter.api.Test;
 
 
 public class ITTsplibArchive {
-  
   static {
     Assertions.assertFalse(System.getProperty("java.class.path").contains("target/classes"));
   }
 
   @Test
-  public void testArchiveExtractionFromJarResource() {
+  public void testTspArchiveExtractionFromJarResource() {
     final String[] filenames = Assertions.assertDoesNotThrow(
         () -> TsplibArchive.extractTspFilenames()
     );
@@ -22,5 +21,23 @@ public class ITTsplibArchive {
         Assertions.assertDoesNotThrow(() -> TsplibArchive.readTspInstance(fname));
       }
     }
+  }
+
+  @Test
+  public void testTspTourArchiveExtractionFromJarResource() {
+    final String[] filenames = Assertions.assertDoesNotThrow(
+        () -> TsplibArchive.extractTspFilenames()
+    );
+    Assertions.assertEquals(144, filenames.length);
+
+    int tourCount = 0;
+    for (final String fname: filenames) {
+      if (fname.endsWith(".tour")) {
+        Assertions.assertDoesNotThrow(() -> TsplibArchive.readTspTour(fname));
+        ++tourCount;
+      }
+    }
+
+    Assertions.assertEquals(32, tourCount);
   }
 }

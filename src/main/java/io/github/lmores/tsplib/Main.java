@@ -1,13 +1,12 @@
 package io.github.lmores.tsplib;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import io.github.lmores.tsplib.tsp.TspInstance;
 
 public class Main {
-  public static void main(String[] args) throws URISyntaxException, IOException {
+  public static void main(final String[] args) throws IOException {
     usageExample();
   }
 

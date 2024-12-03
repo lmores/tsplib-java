@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestTsplibArchive {
   @Test
-  public void testArchiveExtraction() {
+  public void testTspArchiveExtraction() {
     final String[] filenames = Assertions.assertDoesNotThrow(
         () -> TsplibArchive.extractTspFilenames()
     );
@@ -16,5 +16,23 @@ public class TestTsplibArchive {
         Assertions.assertDoesNotThrow(() -> TsplibArchive.readTspInstance(fname));
       }
     }
+  }
+
+  @Test
+  public void testTspTourArchiveExtraction() {
+    final String[] filenames = Assertions.assertDoesNotThrow(
+        () -> TsplibArchive.extractTspFilenames()
+    );
+    Assertions.assertEquals(144, filenames.length);
+
+    int tourCount = 0;
+    for (final String fname: filenames) {
+      if (fname.endsWith(".tour")) {
+        Assertions.assertDoesNotThrow(() -> TsplibArchive.readTspTour(fname));
+        ++tourCount;
+      }
+    }
+
+    Assertions.assertEquals(32, tourCount);
   }
 }
