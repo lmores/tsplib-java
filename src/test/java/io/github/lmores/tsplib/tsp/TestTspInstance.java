@@ -13,13 +13,13 @@ public class TestTspInstance {
 
   @Test
   public void readTspInstance() throws URISyntaxException, IOException {
-    final TspInstance pcb442 = TsplibArchive.readTspInstance("pcb442.tsp");
+    final TspInstance pcb442 = TsplibArchive.loadTspInstance("pcb442.tsp");
     Assertions.assertEquals(221440, computeCanonicalTourLength(pcb442));
 
-    final TspInstance gr666 = TsplibArchive.readTspInstance("gr666.tsp");
+    final TspInstance gr666 = TsplibArchive.loadTspInstance("gr666.tsp");
     Assertions.assertEquals(423710, computeCanonicalTourLength(gr666));
 
-    final TspInstance att532 = TsplibArchive.readTspInstance("att532.tsp");
+    final TspInstance att532 = TsplibArchive.loadTspInstance("att532.tsp");
     Assertions.assertEquals(309636, computeCanonicalTourLength(att532));
   }
 

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * @author   Lorenzo Moreschini
  * @since    0.0.1
  * @see      <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp95.pdf">
- *               TSPLIB specification
+ *             TSPLIB specification
  *           </a>
  */
 public class TsplibFileFormat {

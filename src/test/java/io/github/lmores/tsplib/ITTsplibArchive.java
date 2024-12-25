@@ -18,7 +18,7 @@ public class ITTsplibArchive {
 
     for (final String fname: filenames) {
       if (fname.endsWith(".tsp")) {
-        Assertions.assertDoesNotThrow(() -> TsplibArchive.readTspInstance(fname));
+        Assertions.assertDoesNotThrow(() -> TsplibArchive.loadTspInstance(fname));
       }
     }
   }
@@ -33,7 +33,7 @@ public class ITTsplibArchive {
     int tourCount = 0;
     for (final String fname: filenames) {
       if (fname.endsWith(".tour")) {
-        Assertions.assertDoesNotThrow(() -> TsplibArchive.readTspTour(fname));
+        Assertions.assertDoesNotThrow(() -> TsplibArchive.loadTspTour(fname));
         ++tourCount;
       }
     }

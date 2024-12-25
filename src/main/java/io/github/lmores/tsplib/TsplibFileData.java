@@ -26,36 +26,46 @@ import io.github.lmores.tsplib.TsplibFileFormat.ProblemType;
  * @param name              the name of the instance
  * @param type              the type of problem
  * @param comment           the comment associated with the instance
- * @param dimension         the number of nodes
- * @param depots            declared depots
- * @param fixedEdges        list of fixed edges
- * @param nodeCoords        node coordinates
- * @param edgeWeights       the edge weights
- * @param displayCoords     node coordinates for graph representation only
+ * @param dimension         the number of nodes (and depotes) for ATSP, TSP and CVRP
+ * @param capacity          the truck capacity (CVRP only)
  * @param edgeWeightType    how edge weights are computed
  * @param edgeWeightFormat  how edge weight are provided
- * @param edgeFormatData    how edges are provided
+ * @param edgeDataFormat    how edges are provided
  * @param nodeCoordType     how node coordinates are provided
- * @param dataDisplayType   how nodes should be displayed
+ * @param displayDataType   how nodes should be displayed
+ * @param nodeCoords        the coordinates of the nodes
+ * @param depots            the number of depots in a CVRP
+ * @param demands           the demand fo each node (including depots) in a CVRP
+ * @param edges             TODO
+ * @param fixedEdges        the list of fixed edges
+ * @param edgeWeights       the edge weights
+ * @param displayCoords     node coordinates for graph representation only
+ * @param tours             a list of tours
  * @author   Lorenzo Moreschini
  * @since    0.0.1
  */
 public record TsplibFileData(
-  String name,
-  ProblemType type,
-  String comment,
-  int dimension,
-  int[] depots,
-  int[][] fixedEdges,
-  int[] edgeWeights,
-  double[][] nodeCoords,
-  double[][] displayCoords,
-  EdgeWeightType edgeWeightType,
-  EdgeWeightFormat edgeWeightFormat,
-  EdgeDataFormat edgeFormatData,
-  NodeCoordType nodeCoordType,
-  DisplayDataType dataDisplayType,
-  int[][] tours
+    // Specification part
+    String name,
+    ProblemType type,
+    String comment,
+    int dimension,
+    int capacity,
+    EdgeWeightType edgeWeightType,
+    EdgeWeightFormat edgeWeightFormat,
+    EdgeDataFormat edgeDataFormat,
+    NodeCoordType nodeCoordType,
+    DisplayDataType displayDataType,
+
+    // Data part
+    double[][] nodeCoords,
+    int[] depots,
+    int[] demands,
+    int[][] edges,
+    int[][] fixedEdges,
+    int[] edgeWeights,
+    double[][] displayCoords,
+    int[][] tours
 ) {
 
   /**
@@ -88,6 +98,7 @@ public record TsplibFileData(
     ProblemType type = null;
     String comment = "";
     int dimension = -1;
+    int capacity = -1;
     EdgeWeightType edgeWeightType = null;
     EdgeWeightFormat edgeWeightFormat = null;
     EdgeDataFormat edgeFormatData = null;
@@ -95,10 +106,12 @@ public record TsplibFileData(
     DisplayDataType displayDataType = null;
 
     // Data part
+    double[][] nodeCoords = null;
     int[] depots = null;
+    int[] demands = null;
+    int[][] edges = null;
     int[][] fixedEdges = null;
     int[] edgeWeights = null;
-    double[][] nodeCoords = null;
     double[][] displayCoords = null;
     int[][] tours = null;
 
@@ -120,6 +133,7 @@ public record TsplibFileData(
           }
           case "COMMENT" -> { comment = sc.skip(TsplibFileFormat.DELIMITER).nextLine(); }
           case "DIMENSION" -> { dimension = sc.nextInt(); }
+          case "CAPACITY" -> { capacity = sc.nextInt(); }
           case "EDGE_WEIGHT_TYPE" -> { edgeWeightType = EdgeWeightType.valueOf(sc.next()); }
           case "EDGE_WEIGHT_FORMAT" -> { edgeWeightFormat = EdgeWeightFormat.valueOf(sc.next()); }
           case "EDGE_FORMAT_DATA" -> { edgeFormatData = EdgeDataFormat.valueOf(sc.next()); }
@@ -128,14 +142,17 @@ public record TsplibFileData(
 
           // Data part
           case "NODE_COORD_SECTION" -> {
+            nodeCoords = new double[dimension][];
+
             int i = 0;
             if (nodeCoordType == null) {
+              // Sniff coordinate type
               final String line = sc.skip(TsplibFileFormat.DELIMITER).nextLine();
               final String[] parts = TsplibFileFormat.DELIMITER.split(line);
               final int nParts = parts.length;
+
               if (nParts == 3) {
                 nodeCoordType = NodeCoordType.TWOD_COORDS;
-                nodeCoords = new double[dimension][2];
 
                 final int nodeIdx = Integer.parseInt(parts[0]) - 1;
                 if (nodeIdx != 0) {
@@ -145,14 +162,14 @@ public record TsplibFileData(
                   );
                 }
 
-                final double[] coord = nodeCoords[0];
-                coord[0] = Double.parseDouble(parts[1]);
-                coord[1] = Double.parseDouble(parts[2]);
+                nodeCoords[0] = new double[] {
+                    Double.parseDouble(parts[1]),
+                    Double.parseDouble(parts[2])
+                };
                 i = 1;
 
               } else if (nParts == 4) {
                 nodeCoordType = NodeCoordType.THREED_COORDS;
-                nodeCoords = new double[dimension][3];
 
                 final int nodeIdx = Integer.parseInt(parts[0]) - 1;
                 if (nodeIdx != 0) {
@@ -162,64 +179,51 @@ public record TsplibFileData(
                   );
                 }
 
-                final double[] coord = nodeCoords[0];
-                coord[0] = Double.parseDouble(parts[1]);
-                coord[1] = Double.parseDouble(parts[2]);
-                coord[2] = Double.parseDouble(parts[3]);
+                nodeCoords[0] = new double[] {
+                    Double.parseDouble(parts[1]),
+                    Double.parseDouble(parts[2]),
+                    Double.parseDouble(parts[3])
+                };
                 i = 1;
+
               } else {
                 throw new TsplibFileFormatException(
                     "Instance " + name + ": found 'NODE_COORD_SECTION' with no prior " +
                     "'NODE_COORD_TYPE' section and failed to autodetect 'NODE_COORD_TYPE'"
                 );
               }
-
-              // LOGGER.warning(
-              //     "Instance " + name + ": found 'NODE_COORD_SECTION' with no prior " +
-              //     "'NODE_COORD_TYPE' section. 'NODE_COORD_TYPE' set to '" + nodeCoordType + "'"
-              // );
             }
 
             switch (nodeCoordType) {
               case TWOD_COORDS -> {
-                if (nodeCoords == null) {
-                  nodeCoords = new double[dimension][2];
-                }
                 for (; i < dimension; ++i) {
                   final int nodeIdx = sc.nextInt() - 1;
                   if (nodeIdx != i) {
                     throw new TsplibFileFormatException(
-                      "Instance " + name + ": edge in 'NODE_COORD_SECTION' " +
-                      "has index " + (nodeIdx + 1) + " (expected: " + (i+1) + ")"
+                        "Instance " + name + ": found node " + (nodeIdx + 1) +
+                        " in 'NODE_COORD_SECTION', expected: " + (i + 1)
                     );
                   }
-                  final double[] coords = nodeCoords[nodeIdx];
-                  coords[0] = sc.nextDouble();
-                  coords[1] = sc.nextDouble();
+                  nodeCoords[nodeIdx] = new double[] {sc.nextDouble(), sc.nextDouble()};
                 }
               }
+
               case THREED_COORDS -> {
-                if (nodeCoords == null) {
-                  nodeCoords = new double[dimension][3];
-                }
                 for (; i < dimension; ++i) {
                   final int nodeIdx = sc.nextInt() - 1;
                   if (nodeIdx != i) {
                     throw new TsplibFileFormatException(
-                      "Instance " + name + ": edge in 'NODE_COORD_SECTION' " +
-                      "has index " + (nodeIdx + 1) + " (expected: " + (i + 1) + ")"
+                        "Instance " + name + ": found node " + (nodeIdx + 1) +
+                        " in 'NODE_COORD_SECTION', expected: " + (i + 1)
                     );
                   }
-                  final double[] coords = nodeCoords[nodeIdx];
-                  coords[0] = sc.nextDouble();
-                  coords[1] = sc.nextDouble();
-                  coords[2] = sc.nextDouble();
+                  nodeCoords[nodeIdx] = new double[] {sc.nextDouble(), sc.nextDouble(), sc.nextDouble()};
                 }
               }
+
               case NO_COORDS -> {
                 throw new TsplibFileFormatException(
-                    "Instance " + name + ": found 'NODE_COORD_SECTION' " +
-                    "when 'NODE_COORD_TYPE' is 'NO_COORD'"
+                    "Instance " + name + ": found 'NODE_COORD_SECTION' but NODE_COORD_TYPE == NO_COORD"
                 );
               }
             }
@@ -231,7 +235,7 @@ public record TsplibFileData(
             while ((nextDepot = sc.nextInt()) != -1) {
               if (nextDepot < 1 || nextDepot > dimension) {
                 throw new TsplibFileFormatException(
-                    "Instance " + name + ": depot with index " + nextDepot + " in 'DEPOT_SECTION'"
+                    "Instance " + name + ": found depot " + nextDepot + " in 'DEPOT_SECTION'"
                 );
               }
               tmpDepots.add(nextDepot - 1);
@@ -240,6 +244,59 @@ public record TsplibFileData(
             int i = -1;
             depots = new int[tmpDepots.size()];
             for (final int d: tmpDepots)  depots[++i] = d;
+          }
+
+          case "DEMAND_SECTION" -> {
+            demands = new int[dimension];
+            for (int i = 0; i < dimension; ++i) {
+              final int nodeIdx = sc.nextInt() - 1;
+              demands[nodeIdx] = sc.nextInt();
+            }
+          }
+
+          case "EDGE_DATA" -> {
+            switch (edgeFormatData) {
+              case ADJ_LIST -> {
+                final List<int[]> tmpEdges = new ArrayList<>();  // TODO? initial capacity
+
+                int firstNode;
+                while ((firstNode = sc.nextInt()) != -1) {
+                  final List<Integer> tmpAdjacentNodes = new ArrayList<>(32);
+                  tmpAdjacentNodes.add(firstNode - 1);
+
+                  int node;
+                  while ((node = sc.nextInt()) != -1) {
+                    tmpAdjacentNodes.add(node - 1);
+                  }
+
+                  int i = -1;
+                  final int[] adjacentNodes = new int[tmpAdjacentNodes.size()];
+                  for (final int x: tmpAdjacentNodes)  adjacentNodes[++i] = x;
+
+                  tmpEdges.add(adjacentNodes);
+                }
+
+                edges = tmpEdges.toArray(new int[0][]);
+              }
+
+              case EDGE_LIST -> {
+                final List<int[]> tmpEdges = new ArrayList<>();  // TODO? initial capacity
+
+                int firstNode;
+                while ((firstNode = sc.nextInt()) != -1) {
+                  final int[] edge = new int[] {firstNode - 1, sc.nextInt() - 1};
+                  tmpEdges.add(edge);
+                }
+
+                edges = tmpEdges.toArray(new int[0][]);
+              }
+
+              case null -> {
+                throw new TsplibFileFormatException(
+                    "Instance " + name + ": found 'EDGE_DATA' section but 'EDGE_DATA_FORMAT' is null"
+                );
+              }
+            }
           }
 
           case "FIXED_EDGES_SECTION" -> {
@@ -448,7 +505,7 @@ public record TsplibFileData(
           }
 
           case "TOUR_SECTION" -> {
-            int nodeIdx; 
+            int nodeIdx;
             final List<int[]> tmpTours = new ArrayList<>();
 
             if (dimension < 0) {
@@ -465,14 +522,14 @@ public record TsplibFileData(
             while (sc.hasNext() && sc.hasNextInt() && (nodeIdx = sc.nextInt()) != -1) {
               final int[] tour = new int[dimension];
               tour[0] = nodeIdx;
-              
+
               int i = 0;
               while (sc.hasNext() && (nodeIdx = sc.nextInt()) != -1)  tour[++i] = nodeIdx;
 
               if (++i != dimension) {
                 throw new TsplibFileFormatException(
                     "Tour " + (tmpTours.size() + 1) + " has " + i + " nodes, expected " + dimension
-                ); 
+                );
               }
 
               tmpTours.add(tour);
@@ -491,8 +548,9 @@ public record TsplibFileData(
     }
 
     return new TsplibFileData(
-        name, type, comment, dimension, depots, fixedEdges, edgeWeights, nodeCoords, displayCoords,
-        edgeWeightType, edgeWeightFormat, edgeFormatData, nodeCoordType, displayDataType, tours
+        name, type, comment, dimension, capacity,
+        edgeWeightType, edgeWeightFormat, edgeFormatData, nodeCoordType, displayDataType,
+        nodeCoords, depots, demands, edges, fixedEdges, edgeWeights, displayCoords, tours
     );
   }
 }

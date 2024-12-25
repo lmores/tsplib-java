@@ -1,66 +1,128 @@
 package io.github.lmores.tsplib;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.nio.file.FileSystemAlreadyExistsException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
 import io.github.lmores.tsplib.tour.Tour;
 import io.github.lmores.tsplib.tsp.TspInstance;
 
 /**
- * Provides methods to load the TSPLIB instances shipped with this package.
+ * Methods to load the TSPLIB instances shipped with this package.
  *
  * @author   Lorenzo Moreschini
  * @since    0.0.1
  */
 public class TsplibArchive {
-  /** Path to the zip archive containing all TSP instances of the TSPLIB. */
-  private static final String TSP_ARCHIVE_RESOURCE = "tsp.zip";
+  private static final String ARCHIVE_RESOURCE_NAME = "__archive__";
+  private static final String ATSP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/atsp";
+  private static final String HCP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/hcp";
+  private static final String SOP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/sop";
+  private static final String TSP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/tsp";
+  private static final String VRP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/vrp";
 
   /** This class contains only static methods and no instance is allowed. */
   private TsplibArchive() { /* no-op */ }
 
   /**
-   * Returns the names of all files inside the archive for the Travelling
-   * Salesman Problem available on the TSPLIB official website.
+   * Returns the names of all files inside the archive for the Asymmetric
+   * Travelling Salesman Problem available on the TSPLIB official website.
+   *
+   * The extension of the included files is either {@code .atsp} or
+   * {@code [.opt].tour}.
+   *
+   * @return              the file names
+   * @throws IOException  if an I/O error has occurred
+   * @throws URISyntaxException
+   * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
+   *         The complete official archive
+   *       </a>
+   */
+  public static String[] extractAtspFilenames() throws IOException {
+    return readResourceDirContent(ATSP_ARCHIVE_RESOURCE_NAME);
+  }
+
+  /**
+   * Returns the names of all files inside the archive for the
+   * Sequential Ordering Problem available on the TSPLIB official website.
+   *
+   * The extension of the included files is either {@code .hcp} or
+   * {@code [.opt].tour}.
+   *
+   * @return              the file names
+   * @throws IOException  if an I/O error has occurred
+   * @throws URISyntaxException
+   * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
+   *         The complete official archive
+   *       </a>
+   */
+  public static String[] extractSopFilenames() throws IOException {
+    return readResourceDirContent(SOP_ARCHIVE_RESOURCE_NAME);
+  }
+
+  /**
+   * Returns the names of all files inside the archive for the
+   * Hamiltonian Cycle Problem available on the TSPLIB official website.
+   *
+   * The extension of the included files is either {@code .hcp} or
+   * {@code [.opt].tour}.
+   *
+   * @return              the file names
+   * @throws IOException  if an I/O error has occurred
+   * @throws URISyntaxException
+   * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
+   *         The complete official archive
+   *       </a>
+   */
+  public static String[] extractHcpFilenames() throws IOException {
+    return readResourceDirContent(HCP_ARCHIVE_RESOURCE_NAME);
+  }
+
+  /**
+   * Returns the names of all files inside the archive for the
+   * Vehicle Routing Problem available on the TSPLIB official website.
+   *
+   * The extension of the included files is either {@code .hcp} or
+   * {@code [.opt].tour}.
+   *
+   * @return              the file names
+   * @throws IOException  if an I/O error has occurred
+   * @throws URISyntaxException
+   * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
+   *         The complete official archive
+   *       </a>
+   */
+  public static String[] extractVrpFilenames() throws IOException {
+    return readResourceDirContent(VRP_ARCHIVE_RESOURCE_NAME);
+  }
+
+  /**
+   * Returns the names of all files inside the archive for the
+   * Travelling Salesman Problem available on the TSPLIB official website.
    *
    * The extension of the included files is either {@code .tsp},
    * {@code [.opt].tour} or {@code .problems}.
    *
    * @return              the file names
    * @throws IOException  if an I/O error has occurred
-   * @see     <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
-   *            The complete official archive
-   *          </a>
+   * @throws URISyntaxException
+   * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
+   *         The complete official archive
+   *       </a>
    */
   public static String[] extractTspFilenames() throws IOException {
-    try (final ZipFile zip = new ZipFile(getTmpTspArchiveFile().toFile())) {
-      final List<String> files = new ArrayList<>(256);
-      final Enumeration<? extends ZipEntry> entries = zip.entries();
-      while (entries.hasMoreElements()) {
-        files.add(entries.nextElement().getName());
-      }
-      return files.toArray(new String[files.size()]);
-    }
+    return readResourceDirContent(TSP_ARCHIVE_RESOURCE_NAME);
   }
 
   /**
    * Returns an input stream reading from the specified TSP instance file.
    * The file name can be any among those returned by
    * {@link extractTspFilenames}.
-   * The ownership of the input stream is passed to the caller who must
+   * The ownership of the input stream is passed to the caller that must
    * properly close it when it is no longer needed.
    *
    * @param filename      the name of the instance file (e.g. "a280.tsp")
@@ -68,10 +130,7 @@ public class TsplibArchive {
    * @throws IOException  if an I/O error has occurred
    */
   public static InputStream getTspFileInputStream(final String filename) throws IOException {
-    final ZipFile tspArchive = getTmpTspArchive();
-    final ZipEntry entry = tspArchive.getEntry(filename);
-    if (entry == null)  throw new IOException("'" + filename + "' not found in TSPLIB archive");
-    return tspArchive.getInputStream(entry);
+    return TsplibArchive.class.getResourceAsStream(TSP_ARCHIVE_RESOURCE_NAME + "/" + filename);
   }
 
   /**
@@ -85,12 +144,8 @@ public class TsplibArchive {
    * @return              the TSP instance corresponding to the given filename
    * @throws IOException  if an I/O error has occurred
    */
-  public static TspInstance readTspInstance(final String filename) throws IOException {
-    try (final ZipFile zip = new ZipFile(getTmpTspArchiveFile().toFile())) {
-      final ZipEntry entry = zip.getEntry(filename);
-      if (entry == null)  throw new IOException("File '" + filename + "' not found in tsp archive");
-      return TspInstance.from(TsplibFileData.read(zip.getInputStream(entry)));
-    }
+  public static TspInstance loadTspInstance(final String filename) throws IOException {
+    return TspInstance.from(TsplibFileData.read(getTspFileInputStream(filename)));
   }
 
   /**
@@ -104,83 +159,27 @@ public class TsplibArchive {
    * @return              the TSP instance corresponding to the given filename
    * @throws IOException  if an I/O error has occurred
    */
-  public static Tour readTspTour(final String filename) throws IOException {
-    try (final ZipFile zip = new ZipFile(getTmpTspArchiveFile().toFile())) {
-      final ZipEntry entry = zip.getEntry(filename);
-      if (entry == null)  throw new IOException("File '" + filename + "' not found in tsp archive");
-      return Tour.from(TsplibFileData.read(zip.getInputStream(entry)));
-    }
+  public static Tour loadTspTour(final String filename) throws IOException {
+    return Tour.from(TsplibFileData.read(getTspFileInputStream(filename)));
   }
 
   // ===============================================================================================
   // Private helpers
   // ===============================================================================================
 
-  /**
-   * Internal reference to the ZipFile instance used to return InputStream
-   * objects reading the TSP instances inside the {@link #TSP_ARCHIVE_RESOURCE}.
-   * This object is created the first time a TSP instance must be read from the
-   * internal archive (as an InputStream) and it is kept thereafter.
-   *
-   * This is a workaround due to the fact that closing this object
-   * automatically closes any {@link java.io.InputStream} (reading a
-   * {@link java.util.zip.ZipEntry}) we returned to the caller.
-   */
-  // TODO: avoid this workaround
-  private static ZipFile tspArchive = null;
-  private static ZipFile getTmpTspArchive() throws ZipException, IOException {
-    if (tspArchive == null) {
-      tspArchive = new ZipFile(getTmpTspArchiveFile().toFile());
-    }
-    return tspArchive;
-  }
+  private static String[] readResourceDirContent(final String dir) throws IOException {
+    final List<String> filenames = new ArrayList<>();
 
-  private static Path tmpTspArchiveFile = null;
-  private static Path getTmpTspArchiveFile() throws IOException {
-    if (tmpTspArchiveFile != null)  return tmpTspArchiveFile;
-
-    final URI ref;
-    try {
-      ref = TsplibArchive.class.getResource(TSP_ARCHIVE_RESOURCE).toURI();
-    } catch (final URISyntaxException e) {
-      throw new IOException("Cannot locate tsp instance archive", e);
-    }
-    final String scheme = ref.getScheme();
-
-    if ("jar".equalsIgnoreCase(scheme)) {
-      // When this package is loaded as a .jar file, resources are located
-      // inside it and the jar archive must be registered as a FileSystem to
-      // access them. Moreover, the java.util.zip.ZipFile implementation
-      // only works for archives stored in the 'actual' disk filesystem,
-      // therefore, we must copy the TSPLIB archive to a temporary file.
-
-      final String[] parts = ref.toString().split("!", 2);
-      try {
-        FileSystems.newFileSystem(URI.create(parts[0]), Collections.emptyMap());
-      } catch (final FileSystemAlreadyExistsException e) {
-        /* no-op */
+    try (
+      final InputStream in = Main.class.getResourceAsStream(dir);
+      final BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"))
+    ) {
+      String fname;
+      while ((fname = br.readLine()) != null) {
+        filenames.add(fname);
       }
-
-      final Path tmpDestDir = Path.of(System.getProperty("java.io.tmpdir")).resolve("tsplib");
-      Files.createDirectories(tmpDestDir);
-
-      final Path tmpFile = tmpDestDir.resolve("tsp.zip");
-      Files.deleteIfExists(tmpFile);
-
-      tmpTspArchiveFile = Files.copy(Path.of(ref), tmpFile);
-      try {
-        tmpTspArchiveFile.toFile().deleteOnExit();
-      } catch (final SecurityException e) {
-        /* no-op */
-      }
-
-    } else if ("file".equalsIgnoreCase(scheme)) {
-      tmpTspArchiveFile = Path.of(ref);
-
-    } else {
-      throw new IOException("Cannot load internal archive 'tsp.zip', unhandled scheme: " + scheme);
     }
 
-    return tmpTspArchiveFile;
+    return filenames.toArray(new String[0]);
   }
 }

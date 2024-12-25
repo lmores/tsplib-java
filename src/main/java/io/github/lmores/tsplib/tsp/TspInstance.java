@@ -89,8 +89,8 @@ public abstract class TspInstance {
   protected TspInstance(final TsplibFileData data) {
     this(
         data.name(), data.comment(), data.dimension(),
-        data.edgeWeightType(), data.edgeWeightFormat(), data.edgeFormatData(),
-        data.nodeCoordType(), data.dataDisplayType(), data.nodeCoords(),
+        data.edgeWeightType(), data.edgeWeightFormat(), data.edgeDataFormat(),
+        data.nodeCoordType(), data.displayDataType(), data.nodeCoords(),
         data.depots(), data.fixedEdges(), data.displayCoords()
     );
   }

@@ -1,11 +1,7 @@
 package io.github.lmores.tsplib.atsp;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.function.BiFunction;
 
-import io.github.lmores.tsplib.TsplibFileData;
-import io.github.lmores.tsplib.TsplibFileFormat;
 import io.github.lmores.tsplib.TsplibFileFormat.DisplayDataType;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeDataFormat;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightFormat;

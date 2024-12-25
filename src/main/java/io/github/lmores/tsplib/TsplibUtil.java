@@ -1,7 +1,7 @@
 package io.github.lmores.tsplib;
 
 /**
- * Provides utilities to interact with the data contained in TSPLIB instances.
+ * Utilities to interact with the data contained in TSPLIB instances.
  *
  * @author   Lorenzo Moreschini
  * @since    0.0.1
