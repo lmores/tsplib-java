@@ -6,6 +6,29 @@ import org.junit.jupiter.api.Test;
 public class TestTsplibUtil {
 
   @Test
+  public void testIndexesConversion() {
+    final int r = 100;
+
+    for (int n = 0; n < r; ++n) {
+      for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+          final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, n);
+          final int[] idxs = TsplibUtil.arrayToStrictUpperTriangularMatrixIndexes(k, n);
+          Assertions.assertArrayEquals(new int[] {i,j}, idxs);
+        }
+      }
+    }
+
+    for (int n = 0; n < r; ++n) {
+      for (int k = 0, N = n * n; k < N; ++k) {
+        final int[] idxs = TsplibUtil.arrayToStrictUpperTriangularMatrixIndexes(k, n);
+        final int l = TsplibUtil.strictUpperTriangularToArrayIndex(idxs[0], idxs[1], n);
+        Assertions.assertEquals(k, l);
+      }
+    }
+  }
+
+  @Test
   public void testToMatrixIndexes() {
     Assertions.assertArrayEquals(new int[] {0, 1}, TsplibUtil.arrayToStrictUpperTriangularMatrixIndexes(0, 2));
 

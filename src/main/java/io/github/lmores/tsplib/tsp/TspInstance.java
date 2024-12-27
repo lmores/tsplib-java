@@ -151,6 +151,18 @@ public abstract class TspInstance {
     };
   }
 
+  public int computeTourValue(final int[] tour) {
+    final int n = tour.length;
+    if (n < 2)  return 0;
+
+    int value = getEdgeWeight(tour[n-1], tour[0]);
+    for (int i = 0, m = n - 1; i < m; ++i) {
+      value +=  getEdgeWeight(tour[i], tour[i+1]);
+    }
+
+    return value;
+  }
+
   /**
    * Loads a TSP instance from a file in TSPLIB format.
    *

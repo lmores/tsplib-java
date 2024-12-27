@@ -5,7 +5,12 @@ import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.github.lmores.tsplib.tour.Tour;
+import io.github.lmores.tsplib.tsp.TspInstance;
+import io.github.lmores.tsplib.tsp.TspOptTourValues;
+
 public class TestTsplibArchive {
+
   @Test
   public void testAtspArchiveExtraction() throws IOException {
     final String[] filenames = Assertions.assertDoesNotThrow(
@@ -14,7 +19,7 @@ public class TestTsplibArchive {
     Assertions.assertEquals(19, filenames.length);
 
     for (final String fname: filenames) {
-      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("atsp/" + fname));
+      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/atsp/" + fname));
     }
   }
 
@@ -26,7 +31,7 @@ public class TestTsplibArchive {
     Assertions.assertEquals(18, filenames.length);
 
     for (final String fname: filenames) {
-      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("hcp/" + fname));
+      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/hcp/" + fname));
     }
   }
 
@@ -38,12 +43,12 @@ public class TestTsplibArchive {
     Assertions.assertEquals(41, filenames.length);
 
     for (final String fname: filenames) {
-      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("sop/" + fname));
+      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/sop/" + fname));
     }
   }
 
   @Test
-  public void testTspArchiveExtraction() {
+  public void testTspArchiveExtraction() throws IOException {
     final String[] filenames = Assertions.assertDoesNotThrow(
         () -> TsplibArchive.extractTspFilenames()
     );
@@ -53,13 +58,29 @@ public class TestTsplibArchive {
     int tourCount = 0;
     for (final String fname: filenames) {
       if (fname.endsWith(".tsp")) {
-        Assertions.assertDoesNotThrow(() -> TsplibArchive.loadTspInstance(fname));
+        Assertions.assertDoesNotThrow(
+            () -> TsplibArchive.loadTspInstance(fname),
+            "Failed to load TSP instance " + fname
+        );
         ++instanceCount;
       }
 
-      if (fname.endsWith(".tour")) {
-        Assertions.assertDoesNotThrow(() -> TsplibArchive.loadTspTour(fname));
+      if (fname.endsWith(".opt.tour")) {
+        final Tour tour = Assertions.assertDoesNotThrow(
+            () -> TsplibArchive.loadTspTour(fname),
+            "Failed to load TSP tours for instance " + fname
+        );
         ++tourCount;
+
+        final String name = fname.replace(".opt.tour", "");
+        final TspInstance instance = Assertions.assertDoesNotThrow(
+            () -> TsplibArchive.loadTspInstance(name + ".tsp"),
+            "Failed to load TSP instance " + name
+        );
+
+        final int expectedValue = TspOptTourValues.get(name);
+        final int actualValue = instance.computeTourValue(tour.tours()[0]);
+        Assertions.assertEquals(expectedValue, actualValue);
       }
     }
     Assertions.assertEquals(111, instanceCount);
@@ -74,7 +95,7 @@ public class TestTsplibArchive {
     Assertions.assertEquals(16, filenames.length);
 
     for (final String fname: filenames) {
-      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("vrp/" + fname));
+      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/vrp/" + fname));
     }
   }
 }

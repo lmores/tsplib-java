@@ -32,6 +32,7 @@ public class ExplicitTspInstance extends TspInstance {
 
   @Override
   public int getEdgeWeight(int i, int j) {
+    if (i > j)  i = i ^ j ^ (j = i);  // swap i and j
     final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, getDimension());
     return edgeWeights[k];
   }

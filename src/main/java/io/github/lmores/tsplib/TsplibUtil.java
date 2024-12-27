@@ -61,7 +61,7 @@ public class TsplibUtil {
    *           same matrix
    */
   public static int strictUpperTriangularToArrayIndex(final int i, final int j, final int n) {
-    // [0 + (n-1) + ... + (n-i-1)] + (j-i-1) = [n(n-1) / 2 - (n-i)(n-i-1) / 2] + (j-i-1)
+    // [n + (n-1) + ... + (n-i) - n] + (j-i-1) = [n(n-1) / 2 - (n-i)(n-i-1) / 2] + (j-i-1)
     return n * (n-1) / 2 - (n-i) * (n-i-1) / 2 + (j-i-1);
   }
 
