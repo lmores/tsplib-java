@@ -1,5 +1,6 @@
 package io.github.lmores.tsplib.atsp;
 
+import io.github.lmores.tsplib.TsplibFileData;
 import io.github.lmores.tsplib.TsplibFileFormat.DisplayDataType;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeDataFormat;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightFormat;
@@ -25,20 +26,29 @@ import io.github.lmores.tsplib.TsplibFileFormat.NodeCoordType;
  * @since    0.0.1
  */
 public record ExplicitAtspInstance(
-  String name,
-  String comment,
-  int dimension,
-  int[] depots,
-  int[][] fixedEdges,
-  double[][] nodeCoords,
-  double[][] displayCoords,
-  EdgeWeightType edgeWeightType,
-  EdgeWeightFormat edgeWeightFormat,
-  EdgeDataFormat edgeDataFormat,
-  NodeCoordType nodeCoordType,
-  DisplayDataType displayDataType,
-  int[] edgeWeights
+    String name,
+    String comment,
+    int dimension,
+    int[] depots,
+    int[][] fixedEdges,
+    double[][] nodeCoords,
+    double[][] displayCoords,
+    EdgeWeightType edgeWeightType,
+    EdgeWeightFormat edgeWeightFormat,
+    EdgeDataFormat edgeDataFormat,
+    NodeCoordType nodeCoordType,
+    DisplayDataType displayDataType,
+    int[][] edgeWeights
 ) implements AtspInstance {
+
+  protected ExplicitAtspInstance(final TsplibFileData data) {
+    this(
+        data.name(), data.comment(), data.dimension(), data.depots(),
+        data.fixedEdges(), data.nodeCoords(), data.displayCoords(),
+        data.edgeWeightType(), data.edgeWeightFormat(), data.edgeDataFormat(),
+        data.nodeCoordType(), data.displayDataType(), data.edgeWeights()
+    );
+  }
 
   /**
    * Returns the value of the weight associated with the unordered edge joining
@@ -49,7 +59,7 @@ public record ExplicitAtspInstance(
    * @return   the weight of the edge
    */
   public int getEdgeWeight(final int i, final int j) {
-    return edgeWeights[i * dimension + j];
+    return edgeWeights[i][j];
   }
 
   /**
@@ -59,7 +69,7 @@ public record ExplicitAtspInstance(
    *
    * @return  an array containing edge weights
    */
-  public int[] materializeEdgeWeights() {
+  public int[][] materializeEdgeWeights() {
     return edgeWeights;
   }
 

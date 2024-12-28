@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.lmores.tsplib.tour.Tour;
+import io.github.lmores.tsplib.atsp.AtspInstance;
 import io.github.lmores.tsplib.tsp.TspInstance;
 
 /**
@@ -134,6 +134,21 @@ public class TsplibArchive {
   }
 
   /**
+   * Returns an input stream reading from the specified TSP instance file.
+   * The file name can be any among those returned by
+   * {@link extractTspFilenames}.
+   * The ownership of the input stream is passed to the caller that must
+   * properly close it when it is no longer needed.
+   *
+   * @param filename      the name of the instance file (e.g. "a280.tsp")
+   * @return              the TSP instance corresponding to the given filename
+   * @throws IOException  if an I/O error has occurred
+   */
+  public static InputStream getAtspFileInputStream(final String filename) throws IOException {
+    return TsplibArchive.class.getResourceAsStream(ATSP_ARCHIVE_RESOURCE_NAME + "/" + filename);
+  }
+
+  /**
    * Reads a TSP instance from the TSPLIB archive.
    *
    * The provided file name must be among those returned by
@@ -149,6 +164,21 @@ public class TsplibArchive {
   }
 
   /**
+   * Reads a TSP instance from the TSPLIB archive.
+   *
+   * The provided file name must be among those returned by
+   * {@link extractTspFilenames} and it must end in {@code .tsp} (files ending
+   * in {@code .tour} or {@code .problems}) are not supported by this function).
+   *
+   * @param filename      the name of the instance file (e.g. "a280.tsp")
+   * @return              the TSP instance corresponding to the given filename
+   * @throws IOException  if an I/O error has occurred
+   */
+  public static AtspInstance loadAtspInstance(final String filename) throws IOException {
+    return AtspInstance.from(TsplibFileData.read(getAtspFileInputStream(filename)));
+  }
+
+  /**
    * Reads a tour instance from the TSPLIB archive.
    *
    * The provided file name must be among those returned by
@@ -159,8 +189,8 @@ public class TsplibArchive {
    * @return              the TSP instance corresponding to the given filename
    * @throws IOException  if an I/O error has occurred
    */
-  public static Tour loadTspTour(final String filename) throws IOException {
-    return Tour.from(TsplibFileData.read(getTspFileInputStream(filename)));
+  public static Solutions loadTspTour(final String filename) throws IOException {
+    return Solutions.from(TsplibFileData.read(getTspFileInputStream(filename)));
   }
 
   // ===============================================================================================

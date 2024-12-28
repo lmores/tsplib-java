@@ -4,23 +4,23 @@ import java.util.function.BiFunction;
 
 public class Perf {
   public static void main(String[] args) {
-    lambdaPerf(10);
+    lambdaPerf(10_000);
   }
 
   private static void lambdaPerf(final int repetitions) {
+    double start = System.currentTimeMillis();
     for (int i = 0; i < repetitions; ++i) {
-      final double start = System.currentTimeMillis();
       runLambdaDistanceFunc();
-      final double end = System.currentTimeMillis();
-      System.out.println("Lambda func took " + (end - start) + " ms (iter: " + i + ")");
     }
+    double end = System.currentTimeMillis();
+    System.out.println("Lambda func took " + (end - start) + " ms (iterations: " + repetitions + ")");
 
+    start = System.currentTimeMillis();
     for (int i = 0; i < repetitions; ++i) {
-      final double start = System.currentTimeMillis();
       runNativeDistanceFunc();
-      final double end = System.currentTimeMillis();
-      System.out.println("Native func took " + (end - start) + " ms (iter: " + i + ")");
     }
+    end = System.currentTimeMillis();
+    System.out.println("Native func took " + (end - start) + " ms (iterations: " + repetitions + ")");
   }
 
   private static void runLambdaDistanceFunc() {

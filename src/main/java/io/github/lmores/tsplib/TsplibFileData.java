@@ -63,7 +63,7 @@ public record TsplibFileData(
     int[] demands,
     int[][] edges,
     int[][] fixedEdges,
-    int[] edgeWeights,
+    int[][] edgeWeights,
     double[][] displayCoords,
     int[][] tours
 ) {
@@ -115,7 +115,7 @@ public record TsplibFileData(
     int[] demands = null;
     int[][] edges = null;
     int[][] fixedEdges = null;
-    int[] edgeWeights = null;
+    int[][] edgeWeights = null;
     double[][] displayCoords = null;
     int[][] tours = null;
 
@@ -356,83 +356,43 @@ public record TsplibFileData(
           }
 
           case "EDGE_WEIGHT_SECTION" -> {
-            final int nEdges = dimension * (dimension - 1) / 2;
-            edgeWeights = new int[nEdges];
+            edgeWeights = new int[dimension][dimension];
 
             switch (edgeWeightFormat) {
               case FULL_MATRIX -> {
-                int k = -1;
                 for (int i = 0; i < dimension; ++i) {
                   for (int j = 0; j < dimension; ++j) {
-                    final int weight = sc.nextInt();
-                    if (i < j) {
-                      edgeWeights[++k] = weight;
-                    } else if (i == j) {
-                      if (weight != 0) {
-                        throw new TsplibFileFormatException(
-                            "Instance " + name + ": non-zero edge weight (" + weight +
-                            ") on the diagonal at (" + i + "," + j + ")"
-                        );
-                      }
-                    } else {
-                      final int l = TsplibUtil.strictUpperTriangularToArrayIndex(j, i, dimension);
-                      if (weight != edgeWeights[l]) {
-                        throw new TsplibFileFormatException(
-                            "Instance " + name + ": edge weights are not symmetric, " +
-                            "w[" + i + "," + j + "] = " + weight + " != " +
-                            edgeWeights[l] + " = w[" + j + "," + i + "]"
-                        );
-                      }
-                    }
+                    edgeWeights[i][j] = sc.nextInt();
                   }
                 }
               }
 
               case FUNCTION -> {
                 throw new TsplibFileFormatException(
-                    "Found 'EDGE_WEIGHT_SECTION' when 'EDGE_WEIGHT_FORMAT' is 'FUNCTION'"
+                    "Found 'EDGE_WEIGHT_SECTION' but EDGE_WEIGHT_FORMAT == FUNCTION"
                 );
               }
 
               case LOWER_COL -> {
-                final int n = dimension - 1;
-                for (int j = 0; j < n; ++j) {
-                  for (int i = j + 1; i < n; ++i) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, dimension);
-                    edgeWeights[k] = sc.nextInt();
+                for (int j = 0, n = dimension - 1; j < n; ++j) {
+                  for (int i = j + 1; i < dimension; ++i) {
+                    edgeWeights[i][j] = edgeWeights[j][i] = sc.nextInt();
                   }
                 }
               }
 
               case LOWER_DIAG_COL -> {
-                final int n = dimension - 1;
-                for (int j = 0; j < n; ++j) {
-                  final int diagWeight = sc.nextInt();
-                  if (diagWeight != 0) {
-                    throw new TsplibFileFormatException(
-                        "Instance " + name + ": non-zero diagonal weight at (" + j + "," + j + ")"
-                    );
-                  }
-
-                  for (int i = j + 1; i < n; ++i) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, dimension);
-                    edgeWeights[k] = sc.nextInt();
+                for (int j = 0; j < dimension; ++j) {
+                  for (int i = j; i < dimension; ++i) {
+                    edgeWeights[i][j] = edgeWeights[j][i] = sc.nextInt();
                   }
                 }
               }
 
               case LOWER_DIAG_ROW -> {
                 for (int i = 0; i < dimension; ++i) {
-                  for (int j = 0; j < i; ++j) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(j, i, dimension);
-                    edgeWeights[k] = sc.nextInt();;
-                  }
-
-                  final int diagWeight = sc.nextInt();
-                  if (diagWeight != 0) {
-                    throw new TsplibFileFormatException(
-                        "Instance " + name + ": non-zero diagonal weight at (" + i + "," + i + ")"
-                    );
+                  for (int j = 0; j <= i; ++j) {
+                    edgeWeights[i][j] = edgeWeights[j][i] = sc.nextInt();;
                   }
                 }
               }
@@ -440,8 +400,7 @@ public record TsplibFileData(
               case LOWER_ROW -> {
                 for (int i = 1; i < dimension; ++i) {
                   for (int j = 0; j < i; ++j) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(j, i, dimension);
-                    edgeWeights[k] = sc.nextInt();
+                    edgeWeights[i][j] = edgeWeights[j][i] = sc.nextInt();
                   }
                 }
               }
@@ -449,50 +408,31 @@ public record TsplibFileData(
               case UPPER_COL -> {
                 for (int j = 1; j < dimension; ++j) {
                   for (int i = 0; i < j; ++i) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, dimension);
-                    edgeWeights[k] = sc.nextInt();
+                    edgeWeights[i][j] = edgeWeights[j][i] = sc.nextInt();
                   }
                 }
               }
 
               case UPPER_DIAG_COL -> {
                 for (int j = 0; j < dimension; ++j) {
-                  for (int i = 0; i < j; ++i) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, dimension);
-                    edgeWeights[k] = sc.nextInt();
-                  }
-
-                  final int diagWeight = sc.nextInt();
-                  if (diagWeight != 0) {
-                    throw new TsplibFileFormatException(
-                        "Instance " + name + ": non-zero diagonal weight at (" + j + "," + j + ")"
-                    );
+                  for (int i = 0; i <= j; ++i) {
+                    edgeWeights[i][j] = edgeWeights[j][i] = sc.nextInt();
                   }
                 }
               }
 
               case UPPER_DIAG_ROW -> {
                 for (int i = 0; i < dimension; ++i) {
-                  final int diagWeight = sc.nextInt();
-                  if (diagWeight != 0) {
-                    throw new TsplibFileFormatException(
-                        "Instance " + name + ": non-zero diagonal weight at (" + i + "," + i + ")"
-                    );
-                  }
-
-                  for (int j = i + 1; j < dimension; ++j) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, dimension);
-                    edgeWeights[k] = sc.nextInt();;
+                  for (int j = i; j < dimension; ++j) {
+                    edgeWeights[i][j] = edgeWeights[j][i] = sc.nextInt();;
                   }
                 }
               }
 
               case UPPER_ROW -> {
-                final int n = dimension - 1;
-                for (int i = 0; i < n; ++i) {
+                for (int i = 0, n = dimension - 1; i < n; ++i) {
                   for (int j = i + 1; j < dimension; ++j) {
-                    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, dimension);
-                    edgeWeights[k] = sc.nextInt();
+                    edgeWeights[i][j] = edgeWeights[j][i] = sc.nextInt();
                   }
                 }
               }

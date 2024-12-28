@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.github.lmores.tsplib.tour.Tour;
 import io.github.lmores.tsplib.tsp.TspInstance;
 import io.github.lmores.tsplib.tsp.TspOptTourValues;
 
@@ -18,9 +17,15 @@ public class TestTsplibArchive {
     );
     Assertions.assertEquals(19, filenames.length);
 
+    int instanceCount = 0;
     for (final String fname: filenames) {
-      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/atsp/" + fname));
+      Assertions.assertDoesNotThrow(
+          () -> TsplibArchive.loadAtspInstance(fname),
+          "Failed to load TSP instance " + fname
+      );
+      ++instanceCount;
     }
+    Assertions.assertEquals(19, instanceCount);
   }
 
   @Test
@@ -66,7 +71,7 @@ public class TestTsplibArchive {
       }
 
       if (fname.endsWith(".opt.tour")) {
-        final Tour tour = Assertions.assertDoesNotThrow(
+        final Solutions tour = Assertions.assertDoesNotThrow(
             () -> TsplibArchive.loadTspTour(fname),
             "Failed to load TSP tours for instance " + fname
         );
@@ -95,6 +100,7 @@ public class TestTsplibArchive {
     Assertions.assertEquals(16, filenames.length);
 
     for (final String fname: filenames) {
+      System.out.println(fname);
       TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/vrp/" + fname));
     }
   }

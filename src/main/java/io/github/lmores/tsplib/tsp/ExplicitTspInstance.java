@@ -1,14 +1,12 @@
 package io.github.lmores.tsplib.tsp;
 
-import java.util.Arrays;
-
 import io.github.lmores.tsplib.TsplibFileData;
-import io.github.lmores.tsplib.TsplibUtil;
+
 import static io.github.lmores.tsplib.TsplibFileFormat.*;
 
 /** TSP instance with edge weights explicitly defined. */
 public class ExplicitTspInstance extends TspInstance {
-  final int[] edgeWeights;  // encodes a row-first strict upper triangular matrix
+  final int[][] edgeWeights;
 
   public ExplicitTspInstance(
       final String name, final String comment, final int dimension,
@@ -16,7 +14,7 @@ public class ExplicitTspInstance extends TspInstance {
       final EdgeDataFormat edgeFormatData, final NodeCoordType nodeCoordType,
       final DisplayDataType DataDisplayType,
       final double[][] nodeCoords, final int[] depots, final int[][] fixedEdges,
-      final double[][] displayCoords, final int[] edgeWeights
+      final double[][] displayCoords, final int[][] edgeWeights
   ) {
     super(
         name, comment, dimension, edgeWeightType, edgeWeightFormat, edgeFormatData,
@@ -32,14 +30,12 @@ public class ExplicitTspInstance extends TspInstance {
 
   @Override
   public int getEdgeWeight(int i, int j) {
-    if (i > j)  i = i ^ j ^ (j = i);  // swap i and j
-    final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, getDimension());
-    return edgeWeights[k];
+    return edgeWeights[i][j];
   }
 
   @Override
   public int[] materializeEdgeWeights() {
-    return Arrays.copyOf(edgeWeights, edgeWeights.length);
+    return null;
   }
 
   @Override
@@ -47,10 +43,7 @@ public class ExplicitTspInstance extends TspInstance {
     final int nNodes = getDimension();
     final int[][] weightsMatrix = new int[nNodes][nNodes];
     for (int i = 0; i < nNodes; ++i) {
-      for (int j = i + 1; j < nNodes; ++j) {
-        final int k = TsplibUtil.strictUpperTriangularToArrayIndex(i, j, nNodes);
-        weightsMatrix[i][j] = weightsMatrix[j][i] = edgeWeights[k];
-      }
+      System.arraycopy(edgeWeights[i], 0, weightsMatrix[i], 0, nNodes);
     }
 
     return weightsMatrix;
