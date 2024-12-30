@@ -3,9 +3,8 @@ TYPE: SOP
 COMMENT: Stacker crane application (Norbert Ascheuer)
 DIMENSION: 50
 EDGE_WEIGHT_TYPE: EXPLICIT
-EDGE_WEIGHT_FORMAT: FULL_MATRIX 
+EDGE_WEIGHT_FORMAT: FULL_MATRIX
 EDGE_WEIGHT_SECTION
-50
     0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0 1000000
    -1    0   33    0   23   23    0    0    0   11   24   18   25   23   25   24   16   15   15   23   18   18   16   29   16   11   18   23   10   25   24   31   20   25   25   16   27    0    0   24    0   11    0    0   10   24    0   14   14    0
    -1   -1    0   33   25   25   33   33   33   31   23   27   23   25   23   23   28   28   28   25   27   27   28   14   28   31   27   24   31   23   23   10   27   23   23   28   18   33   33   24   33   31   33   33   31   23   33   31   29    0

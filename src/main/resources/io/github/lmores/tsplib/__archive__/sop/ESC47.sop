@@ -3,9 +3,8 @@ TYPE: SOP
 COMMENT: Received by Norbert Ascheuer / Laureano Escudero
 DIMENSION: 49
 EDGE_WEIGHT_TYPE: EXPLICIT
-EDGE_WEIGHT_FORMAT: FULL_MATRIX 
+EDGE_WEIGHT_FORMAT: FULL_MATRIX
 EDGE_WEIGHT_SECTION
-49
     0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0 1000000
    -1    0  274    0    0    0    0    0  935    0    0  593  942   61  531  730  158  780  499   66  866  850  294  130  842  492  601  614  472  984  647  902   73  998  477  247  548  564  860  233  248  212  247  154    1   27  361  628    0
    -1   -1    0  128    0  508    0    0  628    0    0  907  118  710  659  639  376  116    3  116  564  774  472  103  543  157  998  126   13  497  995   33   16  107  755  476  658    8  975  873  991  580  340   74  635  211  603  121    0

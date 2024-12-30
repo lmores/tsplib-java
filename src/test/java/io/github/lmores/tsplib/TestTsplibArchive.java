@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.github.lmores.tsplib.hcp.HcpInstance;
 import io.github.lmores.tsplib.tsp.TspInstance;
 import io.github.lmores.tsplib.tsp.TspOptTourValues;
 
@@ -21,7 +22,7 @@ public class TestTsplibArchive {
     for (final String fname: filenames) {
       Assertions.assertDoesNotThrow(
           () -> TsplibArchive.loadAtspInstance(fname),
-          "Failed to load TSP instance " + fname
+          "Failed to load ATSP instance " + fname
       );
       ++instanceCount;
     }
@@ -35,9 +36,35 @@ public class TestTsplibArchive {
     );
     Assertions.assertEquals(18, filenames.length);
 
+    int instanceCount = 0;
+    int tourCount = 0;
     for (final String fname: filenames) {
-      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/hcp/" + fname));
+      if (fname.endsWith(".hcp")) {
+        Assertions.assertDoesNotThrow(
+            () -> TsplibArchive.loadHcpInstance(fname),
+            "Failed to load HCP instance " + fname
+        );
+        ++instanceCount;
+
+      } else if (fname.endsWith(".opt.tour")) {
+        final Solutions sol = Assertions.assertDoesNotThrow(
+            () -> TsplibArchive.loadHcpTour(fname),
+            "Failed to load HCP solution for instance " + fname
+        );
+        ++tourCount;
+
+        final String name = fname.replace(".opt.tour", "");
+        final HcpInstance instance = Assertions.assertDoesNotThrow(
+            () -> TsplibArchive.loadHcpInstance(name + ".hcp"),
+            "Failed to load HCP instance " + name
+        );
+
+        // Just compute the value, no list with the expected values is available
+        Assertions.assertDoesNotThrow(() -> instance.computeTourValue(sol.tours()[0]));
+      }
     }
+    Assertions.assertEquals(9, instanceCount);
+    Assertions.assertEquals(9, tourCount);
   }
 
   @Test
@@ -68,9 +95,8 @@ public class TestTsplibArchive {
             "Failed to load TSP instance " + fname
         );
         ++instanceCount;
-      }
 
-      if (fname.endsWith(".opt.tour")) {
+      } else if (fname.endsWith(".opt.tour")) {
         final Solutions tour = Assertions.assertDoesNotThrow(
             () -> TsplibArchive.loadTspTour(fname),
             "Failed to load TSP tours for instance " + fname
@@ -100,7 +126,6 @@ public class TestTsplibArchive {
     Assertions.assertEquals(16, filenames.length);
 
     for (final String fname: filenames) {
-      System.out.println(fname);
       TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/vrp/" + fname));
     }
   }

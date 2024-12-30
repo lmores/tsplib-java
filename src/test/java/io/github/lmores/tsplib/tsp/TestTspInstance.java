@@ -28,7 +28,7 @@ public class TestTspInstance {
   // ==========================================================================
 
   private double computeCanonicalTourValue(final TspInstance instance) {
-    final int nNodes = instance.getDimension();
+    final int nNodes = instance.dimension();
     final int[] canonicalTour = new int[nNodes];
     for (int i = 0; i < nNodes; ++i)  canonicalTour[i] = i;
 
