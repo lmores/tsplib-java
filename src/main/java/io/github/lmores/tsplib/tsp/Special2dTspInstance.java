@@ -22,6 +22,12 @@ public record Special2dTspInstance(
   public static Special2dTspInstance from(
       final TsplibFileData data, final BiFunction<double[], double[], Integer> edgeWeightFunc
   ) {
+    if (edgeWeightFunc == null) {
+      throw new IllegalArgumentException(
+          "Cannot create Special2dTspInstance object if edgeWeightFunc is null"
+      );
+    }
+
     return new Special2dTspInstance(
         data.name(), data.comment(), data.edgeWeightType(), data.dimension(),
         data.nodeCoords(), data.displayCoords(), data.fixedEdges(), edgeWeightFunc

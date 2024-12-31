@@ -56,13 +56,6 @@ public interface TspInstance extends BaseInstance {
       final TsplibFileData data, final BiFunction<double[], double[], Integer> edgeWeightFunc
   ) {
     final EdgeWeightType edgeWeightType = data.edgeWeightType();
-    if (edgeWeightType == EdgeWeightType.SPECIAL && edgeWeightFunc == null) {
-      throw new IllegalArgumentException(
-          "Instance '" + data.name() + "': edge weight format is 'SPECIAL', " +
-          "but the user-defined function is null"
-      );
-    }
-
     return switch(edgeWeightType) {
       case EXPLICIT -> ExplicitTspInstance.from(data);
       case ATT -> PseudoEuclidean2dTspInstance.from(data);
