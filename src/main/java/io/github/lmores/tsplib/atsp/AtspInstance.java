@@ -16,10 +16,10 @@ public interface AtspInstance extends BaseInstance {
   public static AtspInstance from(final TsplibFileData data) {
     final EdgeWeightType edgeWeightType = data.edgeWeightType();
     return switch(edgeWeightType) {
-      case EXPLICIT -> new ExplicitAtspInstance(data);
-      case ATT, CEIL_2D, EUC_2D, EUC_3D, GEO, MAN_2D, MAN_3D,
-           MAX_2D, MAX_3D, SPECIAL, XRAY1, XRAY2 ->
-            throw new IllegalArgumentException("Unsupported edge weight type: " + edgeWeightType);
+      case EXPLICIT -> ExplicitAtspInstance.from(data);
+      case ATT, CEIL_2D, EUC_2D, EUC_3D, GEO, MAN_2D, MAN_3D, MAX_2D, MAX_3D, SPECIAL, XRAY1, XRAY2 -> {
+        throw new IllegalArgumentException("Unimplemented edge weight type: " + edgeWeightType);
+      }
     };
   }
 

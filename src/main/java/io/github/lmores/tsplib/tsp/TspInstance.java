@@ -64,22 +64,22 @@ public interface TspInstance extends BaseInstance {
     }
 
     return switch(edgeWeightType) {
-      case EXPLICIT -> new ExplicitTspInstance(data);
-      case ATT -> new PseudoEuclidean2dTspInstance(data);
-      case CEIL_2D -> new CeilEuclidean2dTspInstance(data);
-      case EUC_2D -> new Euclidean2dTspInstance(data);
-      case EUC_3D -> new Euclidean3dTspInstance(data);
-      case GEO -> new Geographic2dTspInstance(data);
-      case MAN_2D -> new Manhattan2dTspInstance(data);
-      case MAN_3D -> new Manhattan3dTspInstance(data);
-      case MAX_2D -> new Max2dTspInstance(data);
-      case MAX_3D -> new Max3dTspInstance(data);
-      case SPECIAL -> new Special2dTspInstance(data, edgeWeightFunc);
+      case EXPLICIT -> ExplicitTspInstance.from(data);
+      case ATT -> PseudoEuclidean2dTspInstance.from(data);
+      case CEIL_2D -> CeilEuclidean2dTspInstance.from(data);
+      case EUC_2D -> Euclidean2dTspInstance.from(data);
+      case EUC_3D -> Euclidean3dTspInstance.from(data);
+      case GEO -> Geographic2dTspInstance.from(data);
+      case MAN_2D -> Manhattan2dTspInstance.from(data);
+      case MAN_3D -> Manhattan3dTspInstance.from(data);
+      case MAX_2D -> Max2dTspInstance.from(data);
+      case MAX_3D -> Max3dTspInstance.from(data);
+      case SPECIAL -> Special2dTspInstance.from(data, edgeWeightFunc);
       case XRAY1, XRAY2 -> throw new UnsupportedOperationException(
           "Unimplemented edge weight type: " + edgeWeightType
       );
       default -> throw new IllegalArgumentException(
-          "Unexpected edge weight type: " + edgeWeightType
+          "Unsupported edge weight type: " + edgeWeightType
       );
     };
   }

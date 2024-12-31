@@ -4,9 +4,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
-public class ITTsplibArchive {
+public class ITestTsplibArchive {
   static {
-    Assertions.assertFalse(System.getProperty("java.class.path").contains("target/classes"));
+    Assertions.assertFalse(
+        System.getProperty("java.class.path").contains("target/classes"),
+        "Class path contains 'target/classes', but this test suite must be run from jar"
+    );
   }
 
   @Test
@@ -16,28 +19,18 @@ public class ITTsplibArchive {
     );
     Assertions.assertEquals(144, filenames.length);
 
+    int instanceCount = 0;
+    int tourCount = 0;
     for (final String fname: filenames) {
       if (fname.endsWith(".tsp")) {
         Assertions.assertDoesNotThrow(() -> TsplibArchive.loadTspInstance(fname));
-      }
-    }
-  }
-
-  @Test
-  public void testTspTourArchiveExtractionFromJarResource() {
-    final String[] filenames = Assertions.assertDoesNotThrow(
-        () -> TsplibArchive.extractTspFilenames()
-    );
-    Assertions.assertEquals(144, filenames.length);
-
-    int tourCount = 0;
-    for (final String fname: filenames) {
-      if (fname.endsWith(".tour")) {
+        ++instanceCount;
+      } else if (fname.endsWith(".tour")) {
         Assertions.assertDoesNotThrow(() -> TsplibArchive.loadTspTour(fname));
         ++tourCount;
       }
     }
-
+    Assertions.assertEquals(111, instanceCount);
     Assertions.assertEquals(32, tourCount);
   }
 }

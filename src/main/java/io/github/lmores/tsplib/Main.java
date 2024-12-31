@@ -12,13 +12,13 @@ public class Main {
 
   private static void usageExample() throws IOException {
     String[] filenames = TsplibArchive.extractTspFilenames();
-    System.out.println(Arrays.toString(filenames));
+    System.out.println(Arrays.toString(filenames));    // ["a280.opt.tour", "a280.tsp", "ali535.tsp", ...]
 
     TspInstance instance = TsplibArchive.loadTspInstance("a280.tsp");
-    System.out.println(instance.name());            // "a280"
-    // System.out.println(instance.comment());         // "drilling problem (Ludwig)"
-    System.out.println(instance.dimension());       // 280
-    // System.out.println(instance.getEdgeWeightType());  // EUC_2D
+    System.out.println(instance.name());               // "a280"
+    System.out.println(instance.comment());            // "drilling problem (Ludwig)"
+    System.out.println(instance.dimension());          // 280
+    System.out.println(instance.edgeWeightType());     // EUC_2D
     System.out.println(instance.getEdgeWeight(0, 1));  // 20
   }
 }

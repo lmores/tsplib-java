@@ -7,12 +7,16 @@ import java.util.Set;
 import io.github.lmores.tsplib.BaseInstance;
 import io.github.lmores.tsplib.TsplibFileData;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeDataFormat;
+import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 
 public record HcpInstance(
     String name,
+    String comment,
+    EdgeWeightType edgeWeightType,
     int dimension,
     double[][] nodeCoords,
     double[][] displayCoords,
+    int[][] fixedEdges,
     Set<SimpleImmutableEntry<Integer,Integer>> edges
 ) implements BaseInstance {
 
@@ -26,10 +30,8 @@ public record HcpInstance(
    */
   public static HcpInstance from(final TsplibFileData data) {
     return new HcpInstance(
-        data.name(),
-        data.dimension(),
-        data.nodeCoords(),
-        data.displayCoords(),
+        data.name(), data.comment(), data.edgeWeightType(), data.dimension(),
+        data.nodeCoords(), data.displayCoords(), data.fixedEdges(),
         buildEdgeSet(data.edges(), data.edgeDataFormat())
     );
   }

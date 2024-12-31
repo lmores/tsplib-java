@@ -36,7 +36,7 @@ import io.github.lmores.tsplib.TsplibFileFormat.ProblemType;
  * @param nodeCoords        the coordinates of the nodes
  * @param depots            the number of depots in a CVRP
  * @param demands           the demand fo each node (including depots) in a CVRP
- * @param edges             TODO
+ * @param edges             the edges of the graph encoded according to {@code edgeDataFormat}
  * @param fixedEdges        the list of fixed edges
  * @param edgeWeights       the edge weights
  * @param displayCoords     node coordinates for graph representation only
@@ -488,28 +488,6 @@ public record TsplibFileData(
         }
       }
     }
-
-    // if (name == null) throw new TsplibFileFormatException("Instance name not found");
-    // if (type == null) throw new TsplibFileFormatException("Instance file " + name + ": 'TYPE' not found");
-    // if (dimension == -1) throw new TsplibFileFormatException("Instance file " + name + ": 'DIMENSION' not found");
-    // // TODO: int capacity = -1;
-
-    // if (type == ProblemType.TSP) {
-    //   if (edgeWeightType == null) throw new TsplibFileFormatException("Instance file " + name + ": 'EDGE_WEIGHT_TYPE' not found");
-    //   // if (edgeWeightFormat == null) throw new TsplibFileFormatException("Instance file " + name + ": 'EDGE_WEIGHT_FORMAT' not found");
-    //   // if (edgeDataFormat == null) throw new TsplibFileFormatException("Instance file " + name + ": 'EDGE_DATA_FORMAT' not found");
-    //   // if (nodeCoordType == null) throw new TsplibFileFormatException("Instance file " + name + ": 'NODE_COORD_TYPE' not found");
-    // }
-
-    // Data part
-    // TODO: double[][] nodeCoords = null;
-    // TODO: int[] depots = null;
-    // TODO: int[] demands = null;
-    // TODO: int[][] edges = null;
-    // TODO: int[][] fixedEdges = null;
-    // TODO: int[] edgeWeights = null;
-    // TODO: double[][] displayCoords = null;
-    // TODO: int[][] tours = null;
 
     return new TsplibFileData(
         name, type, comment, dimension, capacity,

@@ -64,12 +64,12 @@ public interface VrpInstance extends BaseInstance {
     }
 
     return switch(edgeWeightType) {
-      case EXPLICIT -> new ExplicitVrpInstance(data);
-      case ATT -> new PseudoEuclidean2dVrpInstance(data);
-      case EUC_2D -> new Euclidean2dVrpInstance(data);
-      case CEIL_2D, EUC_3D, GEO, MAN_2D, MAN_3D, MAX_2D, MAX_3D, SPECIAL, XRAY1, XRAY2 ->
+      case EXPLICIT -> ExplicitVrpInstance.from(data);
+      case ATT -> PseudoEuclidean2dVrpInstance.from(data);
+      case EUC_2D -> Euclidean2dVrpInstance.from(data);
+      case CEIL_2D, EUC_3D, GEO, MAN_2D, MAN_3D, MAX_2D, MAX_3D, SPECIAL, XRAY1, XRAY2 -> {
           throw new UnsupportedOperationException("Unimplemented edge weight type: " + edgeWeightType);
-      default -> throw new IllegalArgumentException("Unexpected edge weight type: " + edgeWeightType);
+      }
     };
   }
 

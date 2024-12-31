@@ -1,6 +1,9 @@
 package io.github.lmores.tsplib;
 
+import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
+
 public interface BaseInstance {
+
   /**
    * Returns the name of the instance.
    *
@@ -13,31 +16,17 @@ public interface BaseInstance {
    *
    * @return the comment associated with the instance
    */
-  // public abstract String comment();
+  public abstract String comment();
 
   /**
-   * Returns the number of nodes (including depots).
+   * Returns the number of nodes.
    *
-   * @return the number of nodes (including depots)
+   * @return the number of nodes
    */
   public abstract int dimension();
 
   /**
-   * Returns the nodes to be used as depots.
-   *
-   * @return the nodes to be used as depots
-   */
-  // public int[] depots();
-
-  /**
-   * Returns the edges (two dimensional arrays) that must be traversed.
-   *
-   * @return the edges that must be traversed
-   */
-  // public int[][] fixedEdges();
-
-  /**
-   * Returns the node coordinates (used to compute edge weights).
+   * Returns the node coordinates used to compute edge weights.
    *
    * @return the node coordinates (used to compute edge weights)
    */
@@ -49,6 +38,20 @@ public interface BaseInstance {
    * @return the node coordinates to be used for graphical display only.
    */
   public abstract double[][] displayCoords();
+
+  /**
+   * Returns the rule used to compute edge weights.
+   *
+   * @return the rule used to compute edge weights.
+   */
+  public abstract EdgeWeightType edgeWeightType();
+
+  /**
+   * Returns the edges (as two dimensional arrays) that must be traversed.
+   *
+   * @return the edges that must be traversed
+   */
+  public abstract int[][] fixedEdges();
 
   /**
    * Returns the weight of the edge that joins node {@code i} and {@code j}.
@@ -68,6 +71,16 @@ public interface BaseInstance {
    */
   public abstract boolean hasEdge(final int i, final int j);
 
+  /**
+   * Compute the value of a tour (i.e. the sum of the weights of its edges).
+   *
+   * The tour to evaluate must be provided as a sequence of nodes (with 0-based
+   * indexes) without repeating the first-last node; e.g. the array
+   * {@code {2,3,5,7}} represents the tour 2 -> 3 -> 5 -> 7 -> 2.
+   *
+   * @param tour  the sequence of nodes (with 0-based indexes) defining the tour
+   * @return      the value of the tour
+   */
   public default int computeTourValue(final int[] tour) {
     final int n = tour.length;
     if (n < 2)  return 0;
@@ -97,39 +110,4 @@ public interface BaseInstance {
 
     return weights;
   }
-
-  /**
-   * Returns the rule used to compute edge weights.
-   *
-   * @return the rule used to compute edge weights.
-   */
-  // public EdgeWeightType getEdgeWeightType() { return edgeWeightType; }
-
-  /**
-   * Returns the format used to encode edge weights.
-   *
-   * @return the format used to encode edge weights
-   */
-  // public EdgeWeightFormat getEdgeWeightFormat() { return edgeWeightFormat; }
-
-  /**
-   * Returns the format used to encode the edge of the graph.
-   *
-   * @return the format used to encode the edge of the graph
-   */
-  // public EdgeDataFormat getEdgeDataFormat() { return edgeDataFormat; }
-
-  /**
-   * Returns the type of coordinates associated with the nodes of the graph.
-   *
-   * @return the type of coordinates associated with the nodes of the graph.
-   */
-  // public NodeCoordType getNodeCoordType() { return nodeCoordType; }
-
-  /**
-   * Returns how a graphical display of the nodes can be obtained.
-   *
-   * @return how a graphical display of the nodes can be obtained
-   */
-  // public DisplayDataType getDisplayDataType() { return displayDataType; }
 }

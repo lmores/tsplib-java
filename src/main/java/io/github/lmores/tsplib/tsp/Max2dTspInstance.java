@@ -1,6 +1,7 @@
 package io.github.lmores.tsplib.tsp;
 
 import io.github.lmores.tsplib.TsplibFileData;
+import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 import io.github.lmores.tsplib.TsplibUtil;
 
 /**
@@ -8,13 +9,19 @@ import io.github.lmores.tsplib.TsplibUtil;
  */
 public record Max2dTspInstance(
     String name,
+    String comment,
+    EdgeWeightType edgeWeightType,
     int dimension,
     double[][] nodeCoords,
-    double[][] displayCoords
+    double[][] displayCoords,
+    int[][] fixedEdges
 ) implements TspInstance {
 
-  protected Max2dTspInstance(final TsplibFileData data) {
-    this(data.name(), data.dimension(), data.nodeCoords(), data.displayCoords());
+  public static Max2dTspInstance from(final TsplibFileData data) {
+    return new Max2dTspInstance(
+        data.name(), data.comment(), data.edgeWeightType(), data.dimension(),
+        data.nodeCoords(), data.displayCoords(), data.fixedEdges()
+    );
   }
 
   @Override

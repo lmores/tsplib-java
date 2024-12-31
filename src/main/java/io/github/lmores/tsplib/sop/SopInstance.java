@@ -2,12 +2,16 @@ package io.github.lmores.tsplib.sop;
 
 import io.github.lmores.tsplib.BaseInstance;
 import io.github.lmores.tsplib.TsplibFileData;
+import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 
 public record SopInstance(
     String name,
+    String comment,
+    EdgeWeightType edgeWeightType,
     int dimension,
     double[][] nodeCoords,
     double[][] displayCoords,
+    int[][] fixedEdges,
     int[][] edgeWeights
 ) implements BaseInstance {
 
@@ -21,11 +25,8 @@ public record SopInstance(
    */
   public static SopInstance from(final TsplibFileData data) {
     return new SopInstance(
-        data.name(),
-        data.dimension(),
-        data.nodeCoords(),
-        data.displayCoords(),
-        data.edgeWeights()
+        data.name(), data.comment(), data.edgeWeightType(), data.dimension(),
+        data.nodeCoords(), data.displayCoords(), data.fixedEdges(), data.edgeWeights()
     );
   }
 

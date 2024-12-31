@@ -1,12 +1,16 @@
 package io.github.lmores.tsplib.vrp;
 
 import io.github.lmores.tsplib.TsplibFileData;
+import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 
 public record ExplicitVrpInstance(
     String name,
+    String comment,
+    EdgeWeightType edgeWeightType,
     int dimension,
     double[][] nodeCoords,
     double[][] displayCoords,
+    int[][] fixedEdges,
     int[][] edgeWeights,
     int[] demands,
     int[] depots
@@ -18,9 +22,10 @@ public record ExplicitVrpInstance(
    * @param data  the instance data
    * @return      a VRP instance
    */
-  public ExplicitVrpInstance(final TsplibFileData data) {
-    this(
-        data.name(), data.dimension(), data.nodeCoords(), data.displayCoords(),
+  public static ExplicitVrpInstance from(final TsplibFileData data) {
+    return new ExplicitVrpInstance(
+        data.name(), data.comment(), data.edgeWeightType(), data.dimension(),
+        data.nodeCoords(), data.displayCoords(), data.fixedEdges(),
         data.edgeWeights(), data.demands(), data.depots()
     );
   }
