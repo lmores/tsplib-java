@@ -167,6 +167,7 @@ public class TsplibFileFormat {
    * @since    0.0.1
    */
   public static class TsplibFileFormatException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Runtime exception thrown when inconsistent data is found while parsing
