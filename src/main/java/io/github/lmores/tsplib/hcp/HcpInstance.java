@@ -49,8 +49,7 @@ public record HcpInstance(
    * @return   true if an edge joins nodes {@code i} and {@code j}, false otherwise
    */
   public boolean hasEdge(final int i, final int j) {
-    final int dimension = dimension();
-    return 0 <= i && i < dimension && 0 <= j && j < dimension && i != j;
+    return edges.contains(new SimpleImmutableEntry<Integer,Integer>(i, j));
   }
 
   private static final Set<SimpleImmutableEntry<Integer,Integer>> buildEdgeSet(

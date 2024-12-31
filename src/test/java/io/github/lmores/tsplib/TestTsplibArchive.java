@@ -74,9 +74,15 @@ public class TestTsplibArchive {
     );
     Assertions.assertEquals(41, filenames.length);
 
+    int instanceCount = 0;
     for (final String fname: filenames) {
-      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/sop/" + fname));
+      Assertions.assertDoesNotThrow(
+          () -> TsplibArchive.loadSopInstance(fname),
+          "Failed to load SOP instance " + fname
+      );
+      ++instanceCount;
     }
+    Assertions.assertEquals(41, instanceCount);
   }
 
   @Test
@@ -125,8 +131,14 @@ public class TestTsplibArchive {
     );
     Assertions.assertEquals(16, filenames.length);
 
+    int instanceCount = 0;
     for (final String fname: filenames) {
-      TsplibFileData.read(TestTsplibArchive.class.getResourceAsStream("__archive__/vrp/" + fname));
+      Assertions.assertDoesNotThrow(
+          () -> TsplibArchive.loadVrpInstance(fname),
+          "Failed to load VRP instance " + fname
+      );
+      ++instanceCount;
     }
+    Assertions.assertEquals(16, instanceCount);
   }
 }
