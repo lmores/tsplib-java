@@ -122,7 +122,7 @@
             </manifestEntries>
           </archive>
           <excludes>
-            <exclude>io/github/lmores/tsplib/Main.class</exclude>
+            <exclude>io/github/lmores/tsplib/Readme.class</exclude>
           </excludes>
         </configuration>
       </plugin>

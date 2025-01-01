@@ -5,7 +5,7 @@ import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 import io.github.lmores.tsplib.TsplibUtil;
 
 /**
- * TSP instance with edge weights computed using the Chebyshev distance.
+ * TSP instance with edge weights computed using the Chebyshev (max) distance.
  */
 public record Max2dTspInstance(
     String name,

@@ -2,6 +2,12 @@ package io.github.lmores.tsplib;
 
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 
+/**
+ * Interface implemented by all classes that represent a problem type from TSPLIB.
+ *
+ * @author  Lorenzo Moreschini
+ * @since   0.0.1
+ */
 public interface BaseInstance {
 
   /**
@@ -28,21 +34,21 @@ public interface BaseInstance {
   /**
    * Returns the node coordinates used to compute edge weights.
    *
-   * @return the node coordinates (used to compute edge weights)
+   * @return the node coordinates used to compute edge weights
    */
   public abstract double[][] nodeCoords();
 
   /**
    * Returns the node coordinates to be used for graphical display only.
    *
-   * @return the node coordinates to be used for graphical display only.
+   * @return the node coordinates to be used for graphical display only
    */
   public abstract double[][] displayCoords();
 
   /**
    * Returns the rule used to compute edge weights.
    *
-   * @return the rule used to compute edge weights.
+   * @return the rule used to compute edge weights
    */
   public abstract EdgeWeightType edgeWeightType();
 
@@ -75,7 +81,7 @@ public interface BaseInstance {
    * Compute the value of a tour (i.e. the sum of the weights of its edges).
    *
    * The tour to evaluate must be provided as a sequence of nodes (with 0-based
-   * indexes) without repeating the first-last node; e.g. the array
+   * indexes) without repeating the first/last node; e.g. the array
    * {@code {2,3,5,7}} represents the tour 2 -> 3 -> 5 -> 7 -> 2.
    *
    * @param tour  the sequence of nodes (with 0-based indexes) defining the tour

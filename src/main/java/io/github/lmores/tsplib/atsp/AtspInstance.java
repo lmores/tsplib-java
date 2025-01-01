@@ -4,14 +4,22 @@ import io.github.lmores.tsplib.BaseInstance;
 import io.github.lmores.tsplib.TsplibFileData;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 
+/**
+ * Interface shared by all ATSP instances.
+ *
+ * @author  Lorenzo Moreschini
+ * @since   0.0.1
+ */
 public interface AtspInstance extends BaseInstance {
+
   /**
    * Returns an ATSP instance backed by the provided data.
    *
-   * Currently, only {@code TsplibFileData} objects containing explicit edge weights are supported.
+   * Currently, only {@code TsplibFileData} objects containing {@link EXPLICIT}
+   * edge weights are supported.
    *
-   * @param data            the instance data
-   * @return                an ATSP instance
+   * @param data  the instance data
+   * @return      an ATSP instance
    */
   public static AtspInstance from(final TsplibFileData data) {
     final EdgeWeightType edgeWeightType = data.edgeWeightType();

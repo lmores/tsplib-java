@@ -18,10 +18,7 @@ import io.github.lmores.tsplib.TsplibFileFormat.NodeCoordType;
 import io.github.lmores.tsplib.TsplibFileFormat.ProblemType;
 
 /**
- * Used internally to store the data found when reading an instance file in the
- * the TSPLIB format.
- *
- * This class is completely implementation-dependent and not available externally.
+ * Store the data found when reading a file in the TSPLIB format.
  *
  * @param name              the name of the instance
  * @param type              the type of problem

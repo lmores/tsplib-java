@@ -4,6 +4,12 @@ import io.github.lmores.tsplib.BaseInstance;
 import io.github.lmores.tsplib.TsplibFileData;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 
+/**
+ * Represent a SOP instances.
+ *
+ * @author  Lorenzo Moreschini
+ * @since   0.0.1
+ */
 public record SopInstance(
     String name,
     String comment,

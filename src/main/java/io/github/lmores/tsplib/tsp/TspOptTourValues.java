@@ -3,15 +3,35 @@ package io.github.lmores.tsplib.tsp;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class that stores the optimal value of each TSP instance in TSPLIB.
+ *
+ * Instances of this class are not allowed.
+ *
+ * @author  Lorenzo Moreschini
+ * @since   0.0.1
+ */
 public class TspOptTourValues {
   private static final Map<String, Integer> TSP_OPT_TOUR_VALUES = buildValues();
 
+  /** This class contains only static methods and no instance is allowed. */
   private TspOptTourValues() { /* no-op */ }
 
+  /**
+   * Returns the optimal value for the given TSP instance in TSPLIB.
+   *
+   * @param name  the name of the instance (e.g. "a280")
+   * @return      the optimal value
+   */
   public static int get(final String name) {
     return TSP_OPT_TOUR_VALUES.get(name);
   }
 
+  /**
+   * Returns a map containing the optimal value for each TSP instance in TSPLIB.
+   *
+   * @return  the optimal values (e.g. {@code {"a280": 2579, "ali535": 202339, ...}})
+   */
   public static Map<String, Integer> getAll(final String name) {
     return new HashMap<>(TSP_OPT_TOUR_VALUES);
   }

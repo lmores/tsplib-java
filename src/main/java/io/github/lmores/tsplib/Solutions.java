@@ -9,10 +9,10 @@ package io.github.lmores.tsplib;
 public record Solutions(String name, String comment, int dimension, int[][] tours) {
 
   /**
-   * Returns a tour instance backed by the provided data.
+   * Returns an instance backed by the provided data.
    *
-   * @param data  the tour data
-   * @return      a tour instance
+   * @param data  the tour(s) data
+   * @return      an instance
    */
   public static Solutions from(final TsplibFileData data) {
     return new Solutions(data.name(), data.comment(), data.dimension(), data.tours());

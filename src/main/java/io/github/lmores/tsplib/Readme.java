@@ -5,7 +5,15 @@ import java.util.Arrays;
 
 import io.github.lmores.tsplib.tsp.TspInstance;
 
-public class Main {
+/**
+ * The sole purpose of this class is to run the snippets used in README.md.
+ *
+ * This class is not included in the jar archive.
+ *
+ * @author  Lorenzo Moreschini
+ * @since   0.0.1
+ */
+public class Readme {
   public static void main(final String[] args) throws IOException {
     usageExample();
   }

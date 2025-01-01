@@ -9,8 +9,9 @@ import io.github.lmores.tsplib.TsplibFileData;
 import io.github.lmores.tsplib.TsplibFileFormat.EdgeWeightType;
 
 /**
- * Common methods for all implementations of TSP instances.
- * Subclasses differs only in the strategy adopted to compute edge weights.
+ * Interface shared by all implementations of VRP instances.
+ *
+ * Implementing classes differs only in the strategy used to compute edge weights.
  * <p>
  * The following assumptions hold for any concrete implementation of this class:
  * <ol>
@@ -39,11 +40,12 @@ public interface VrpInstance extends BaseInstance {
   }
 
   /**
-   * Returns a  instance backed by the provided data using a user-defined
-   * function to compute edge weights.
-   * <p>
-   * The edge weight function accepts two arrays of double values and returns
-   * the weight value as a double.
+   * Returns an instance backed by the provided data.
+   *
+   * The edge weight function is required only when
+   * {@code data.edgeWeightType() == EdgeWeightType.SPECIAL}, accepts two
+   * arrays of double values and returns the weight value as a double.
+   *
    * To compute the weight of the edge joining nodes {@code i} and {@code j}
    * the provided function is called using as argument the coordinates of nodes
    * {@code i} and {@code j}.
@@ -101,6 +103,7 @@ public interface VrpInstance extends BaseInstance {
 
   /**
    * Checks whether there esists an edge joining nodes {@code i} and {@code j}.
+   *
    * Since each {@link VrpInstance} is defined on a complete graph, this method
    * simply checks that {@code 0 <= i,j < dimension} and {@code i != j}.
    *

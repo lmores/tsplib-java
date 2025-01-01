@@ -3,7 +3,8 @@ package io.github.lmores.tsplib;
 import java.util.regex.Pattern;
 
 /**
- * Collection of constant values used in TSPLIB instance files.
+ * Collection of constants used in TSPLIB instance files.
+ *
  * See TSPLIB specifications for details.
  *
  * @author   Lorenzo Moreschini

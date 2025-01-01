@@ -3,15 +3,35 @@ package io.github.lmores.tsplib.atsp;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class that stores the optimal value of each ATSP instance in TSPLIB.
+ *
+ * Instances of this class are not allowed.
+ *
+ * @author  Lorenzo Moreschini
+ * @since   0.0.1
+ */
 public class AtspOptTourValues {
   private static final Map<String, Integer> ATSP_OPT_TOUR_VALUES = buildValues();
 
+  /** This class contains only static methods and no instance is allowed. */
   private AtspOptTourValues() { /* no-op */ }
 
+  /**
+   * Returns the optimal value for the given ATSP instance in TSPLIB.
+   *
+   * @param name  the name of the instance (e.g. "br17")
+   * @return      the optimal value
+   */
   public static int get(final String name) {
     return ATSP_OPT_TOUR_VALUES.get(name);
   }
 
+  /**
+   * Returns a map containing the optimal value for each ATSP instance in TSPLIB.
+   *
+   * @return  the optimal values (e.g. {@code {"br17": 39, "ft53": 6905, ...}})
+   */
   public static Map<String, Integer> getAll(final String name) {
     return new HashMap<>(ATSP_OPT_TOUR_VALUES);
   }
