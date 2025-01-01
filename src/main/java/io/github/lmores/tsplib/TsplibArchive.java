@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,6 @@ public class TsplibArchive {
    *
    * @return              the file names
    * @throws IOException  if an I/O error occurs
-   * @throws URISyntaxException
    * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
    *         The complete official archive
    *       </a>
@@ -62,7 +60,6 @@ public class TsplibArchive {
    *
    * @return              the file names
    * @throws IOException  if an I/O error occurs
-   * @throws URISyntaxException
    * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
    *         The complete official archive
    *       </a>
@@ -79,7 +76,6 @@ public class TsplibArchive {
    *
    * @return              the file names
    * @throws IOException  if an I/O error occurs
-   * @throws URISyntaxException
    * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
    *         The complete official archive
    *       </a>
@@ -97,7 +93,6 @@ public class TsplibArchive {
    *
    * @return              the file names
    * @throws IOException  if an I/O error occurs
-   * @throws URISyntaxException
    * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
    *         The complete official archive
    *       </a>
@@ -114,7 +109,6 @@ public class TsplibArchive {
    *
    * @return              the file names
    * @throws IOException  if an I/O error occurs
-   * @throws URISyntaxException
    * @see  <a href="http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/ALL_tsp.tar.gz">
    *         The complete official archive
    *       </a>
@@ -324,7 +318,7 @@ public class TsplibArchive {
     final List<String> filenames = new ArrayList<>();
 
     try (
-      final InputStream in = Readme.class.getResourceAsStream(dir);
+      final InputStream in = TsplibArchive.class.getResourceAsStream(dir);
       final BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"))
     ) {
       String fname;

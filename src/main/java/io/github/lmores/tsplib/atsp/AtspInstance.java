@@ -15,8 +15,8 @@ public interface AtspInstance extends BaseInstance {
   /**
    * Returns an ATSP instance backed by the provided data.
    *
-   * Currently, only {@code TsplibFileData} objects containing {@link EXPLICIT}
-   * edge weights are supported.
+   * Currently, only {@link TsplibFileData} objects containing EXPLICIT edge
+   * weights are supported.
    *
    * @param data  the instance data
    * @return      an ATSP instance
