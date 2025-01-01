@@ -28,5 +28,14 @@ public class Readme {
     System.out.println(instance.dimension());          // 280
     System.out.println(instance.edgeWeightType());     // EUC_2D
     System.out.println(instance.getEdgeWeight(0, 1));  // 20
+
+    Solutions solutions = TsplibArchive.loadTspTour("a280.opt.tour");
+    System.out.println(solutions.name());                       // "./TSPLIB/a280.tsp.optbc.tour"
+    System.out.println(solutions.comment());                    // ""
+    System.out.println(solutions.dimension());                  // 280
+    System.out.println(solutions.tours().length);               // 1
+    System.out.println(Arrays.toString(solutions.tours()[0]));  // [0, 1, 241, 242, 243, ...]
+
+    // Analogous methods are available also for ATSP, HCP, SOP and VRP instances (see the javadoc).
   }
 }

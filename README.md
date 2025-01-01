@@ -1,11 +1,11 @@
 # TSPLIB Java package
 
-This library provides utilities to read files in [TSPLIB](http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95) format.
-As of version `0.0.1` only `.tsp` files are supported.
+This library allows to read files in [TSPLIB](http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95) format.
+All types of problems in TSPLIB format are supported, except those with extension `.problems`.
 
-This package includes a copy of the Travelling Salesman Problem (TSP) instances contained in the official TSPLIB archive.
+This package includes a copy of each file contained in the official TSPLIB archive.
 
-Javadoc is available at [TODO](https://lmores.github.io/doc/tsplib).
+The documentation is available [here]( https://javadoc.io/doc/io.github.lmores.tsplib/tsplib).
 
 
 ## How to
@@ -15,24 +15,21 @@ import io.github.lmores.tsplib.TspInstance;
 import io.github.lmores.tsplib.TsplibArchive;
 
 String[] filenames = TsplibArchive.extractTspFilenames();
-// { "a280.opt.tour", "a280.tsp", "ali535.tsp", ... }
+System.out.println(Arrays.toString(filenames));    // ["a280.opt.tour", "a280.tsp", "ali535.tsp", ...]
 
-TspInstance instance = TsplibArchive.readTspInstance("a280.tsp");
-instance.getName()            // "a280"
-instance.getComment()         // "drilling problem (Ludwig)"
-instance.getDimension()       // 280
-instance.getEdgeWeightType()  // EUC_2D
-instance.getEdgeWeight(0, 1)  // 20
+TspInstance instance = TsplibArchive.loadTspInstance("a280.tsp");
+System.out.println(instance.name());               // "a280"
+System.out.println(instance.comment());            // "drilling problem (Ludwig)"
+System.out.println(instance.dimension());          // 280
+System.out.println(instance.edgeWeightType());     // EUC_2D
+System.out.println(instance.getEdgeWeight(0, 1));  // 20
+
+Solutions solutions = TsplibArchive.loadTspTour("a280.opt.tour");
+System.out.println(solutions.name());                       // "./TSPLIB/a280.tsp.optbc.tour"
+System.out.println(solutions.comment());                    // ""
+System.out.println(solutions.dimension());                  // 280
+System.out.println(solutions.tours().length);               // 1
+System.out.println(Arrays.toString(solutions.tours()[0]));  // [0, 1, 241, 242, 243, ...]
+
+// Analogous methods are available also for ATSP, HCP, SOP and VRP instances (see the javadoc).
 ```
-
-
-## Notes for TSP instances
-
-Since all TSPLIB instance files for the TSP assume that the underlying graph is complete, edges are not stored explicitly in memory.
-
-Except for the edges themselves, the only value associated with each edge is its weight.
-TSPLIB instance files have 13 different ways to encode edge weights (`EXPLICIT`, `EUC_2D`, `EUC_3D`, `MAX_2D`, `MAX_3D`, `MAN_2D`, `MAN_3D`, `CEIL_2D`, `GEO`, `ATT`, `XRAY1`, `XRAY2` and `SPECIAL`).
-Of all these possibilities, only the `EXPLICIT` case requires the direct enumeration of all weight values, whereas in all the other cases the weight is computed by a specific function starting from the coordinates of the nodes involved.
-
-Since the number of nodes can be high, when the edge weights format is different from `EXPLICT`, weight values are not stored in memory when an instance is loaded; instead, they are generated on the fly each time the method `TspInstance.getEdgeWeight` is called.
-If you need a in memory copy of all the edge weights you can call the methods `TspInstance.materializeEdgeWeights` or `TspInstance.materializeEdgeWeightsMatrix` (see the javadoc for further details).
