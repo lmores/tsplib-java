@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -10,8 +9,30 @@
   <packaging>jar</packaging>
 
   <name>tsplib</name>
-  <description>Java utilities for the TSPLIB</description>
+  <description>Java library for the TSPLIB</description>
   <url>https://github.com/lmores/tsplib-java</url>
+
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Lorenzo Moreschini</name>
+      <email>lor.moreschini@gmail.com</email>
+      <!-- <organization></organization> -->
+      <organizationUrl>https://github.com/lmores</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/lmores/tsplib-java.git</connection>
+    <developerConnection>scm:git:ssh://github.com:lmores/tsplib-java.git</developerConnection>
+    <url>http://github.com/lmores/tsplib-java</url>
+  </scm>
 
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
@@ -27,26 +48,6 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
-  <developers>
-    <developer>
-      <name>Lorenzo Moreschini</name>
-      <email>lor.moreschini@gmail.com</email>
-    </developer>
-  </developers>
-
-  <licenses>
-    <license>
-      <name>MIT License</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:git:git://github.com/lmores/tsplib-java.git</connection>
-    <developerConnection>scm:git:ssh://github.com:lmores/tsplib-java.git</developerConnection>
-    <url>http://github.com/lmores/tsplib-java</url>
-  </scm>
 
   <dependencies>
     <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
