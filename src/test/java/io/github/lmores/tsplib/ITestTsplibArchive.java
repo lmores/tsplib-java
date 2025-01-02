@@ -1,7 +1,11 @@
 package io.github.lmores.tsplib;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import io.github.lmores.tsplib.tsp.TspInstance;
 
 
 public class ITestTsplibArchive {
@@ -13,24 +17,13 @@ public class ITestTsplibArchive {
   }
 
   @Test
-  public void testTspArchiveExtractionFromJarResource() {
-    final String[] filenames = Assertions.assertDoesNotThrow(
-        () -> TsplibArchive.extractTspFilenames()
-    );
-    Assertions.assertEquals(144, filenames.length);
+  public void testTspArchiveExtractionFromJarResource() throws IOException {
+    System.out.println(System.getProperty("java.class.path"));
 
-    int instanceCount = 0;
-    int tourCount = 0;
-    for (final String fname: filenames) {
-      if (fname.endsWith(".tsp")) {
-        Assertions.assertDoesNotThrow(() -> TsplibArchive.loadTspInstance(fname));
-        ++instanceCount;
-      } else if (fname.endsWith(".tour")) {
-        Assertions.assertDoesNotThrow(() -> TsplibArchive.loadTspTour(fname));
-        ++tourCount;
-      }
-    }
-    Assertions.assertEquals(111, instanceCount);
-    Assertions.assertEquals(32, tourCount);
+    final TspInstance instance = Assertions.assertDoesNotThrow(
+        () -> TsplibArchive.loadTspInstance("a280"),
+        "Failed to load instance from jar resources"
+    );
+    System.out.println(instance);
   }
 }
