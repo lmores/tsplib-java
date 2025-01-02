@@ -20,7 +20,7 @@ import io.github.lmores.tsplib.vrp.VrpInstance;
  * @since    0.0.1
  */
 public class TsplibArchive {
-  private static final String ARCHIVE_RESOURCE_NAME = "__archive__";
+  private static final String ARCHIVE_RESOURCE_NAME = "/io/github/lmores/tsplib/__archive__";
   private static final String ATSP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/atsp";
   private static final String HCP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/hcp";
   private static final String SOP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/sop";
