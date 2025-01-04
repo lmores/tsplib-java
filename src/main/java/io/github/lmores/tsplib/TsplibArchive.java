@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.github.lmores.tsplib.atsp.AtspInstance;
@@ -27,11 +28,88 @@ public class TsplibArchive {
   private static final String TSP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/tsp";
   private static final String VRP_ARCHIVE_RESOURCE_NAME = ARCHIVE_RESOURCE_NAME + "/vrp";
 
+  private static final String[] ATSP_FILENAMES = new String[] {
+    "br17.atsp",            "ft53.atsp",            "ft70.atsp",            "ftv170.atsp",
+    "ftv33.atsp",           "ftv35.atsp",           "ftv38.atsp",           "ftv44.atsp",
+    "ftv47.atsp",           "ftv55.atsp",           "ftv64.atsp",           "ftv70.atsp",
+    "kro124p.atsp",         "p43.atsp",             "rbg323.atsp",          "rbg358.atsp",
+    "rbg403.atsp",          "rbg443.atsp",          "ry48p.atsp"
+  };
+  private static final String[] HCP_FILENAMES = new String[] {
+    "alb1000.hcp",          "alb2000.opt.tour",     "alb3000b.hcp",         "alb3000c.opt.tour",
+    "alb3000e.hcp",         "alb4000.opt.tour",     "alb1000.opt.tour",     "alb3000a.hcp",
+    "alb3000b.opt.tour",    "alb3000d.hcp",         "alb3000e.opt.tour",    "alb5000.hcp",
+    "alb2000.hcp",          "alb3000a.opt.tour",    "alb3000c.hcp",         "alb3000d.opt.tour",
+    "alb4000.hcp",          "alb5000.opt.tour"
+  };
+  private static final String[] SOP_FILENAMES = new String[] {
+    "br17.10.sop",          "br17.12.sop",          "ESC07.sop",            "ESC11.sop",
+    "ESC12.sop",            "ESC25.sop",            "ESC47.sop",            "ESC63.sop",
+    "ESC78.sop",            "ft53.1.sop",           "ft53.2.sop",           "ft53.3.sop",
+    "ft53.4.sop",           "ft70.1.sop",           "ft70.2.sop",           "ft70.3.sop",
+    "ft70.4.sop",           "kro124p.1.sop",        "kro124p.2.sop",        "kro124p.3.sop",
+    "kro124p.4.sop",        "p43.1.sop",            "p43.2.sop",            "p43.3.sop",
+    "p43.4.sop",            "prob.100.sop",         "prob.42.sop",          "rbg048a.sop",
+    "rbg050c.sop",          "rbg109a.sop",          "rbg150a.sop",          "rbg174a.sop",
+    "rbg253a.sop",          "rbg323a.sop",          "rbg341a.sop",          "rbg358a.sop",
+    "rbg378a.sop",          "ry48p.1.sop",          "ry48p.2.sop",          "ry48p.3.sop",
+    "ry48p.4.sop"
+  };
+  private static final String[] TSP_FILENAMES = new String[] {
+    "a280.opt.tour",        "a280.tsp",             "ali535.tsp",           "att48.opt.tour",
+    "att48.tsp",            "att532.tsp",           "bayg29.opt.tour",      "bayg29.tsp",
+    "bays29.opt.tour",      "bays29.tsp",           "berlin52.opt.tour",    "berlin52.tsp",
+    "bier127.tsp",          "brazil58.tsp",         "brd14051.tsp",         "brg180.opt.tour",
+    "brg180.tsp",           "burma14.tsp",          "ch130.opt.tour",       "ch130.tsp",
+    "ch150.opt.tour",       "ch150.tsp",            "d1291.tsp",            "d15112.tsp",
+    "d1655.tsp",            "d18512.tsp",           "d198.tsp",             "d2103.tsp",
+    "d493.tsp",             "d657.tsp",             "dantzig42.tsp",        "dsj1000.tsp",
+    "eil101.opt.tour",      "eil101.tsp",           "eil51.opt.tour",       "eil51.tsp",
+    "eil76.opt.tour",       "eil76.tsp",            "fl1400.tsp",           "fl1577.tsp",
+    "fl3795.tsp",           "fl417.tsp",            "fnl4461.tsp",          "fri26.opt.tour",
+    "fri26.tsp",            "gil262.tsp",           "gr120.opt.tour",       "gr120.tsp",
+    "gr137.tsp",            "gr17.tsp",             "gr202.opt.tour",       "gr202.tsp",
+    "gr21.tsp",             "gr229.tsp",            "gr24.opt.tour",        "gr24.tsp",
+    "gr431.tsp",            "gr48.opt.tour",        "gr48.tsp",             "gr666.opt.tour",
+    "gr666.tsp",            "gr96.opt.tour",        "gr96.tsp",             "hk48.tsp",
+    "kroA100.opt.tour",     "kroA100.tsp",          "kroA150.tsp",          "kroA200.tsp",
+    "kroB100.tsp",          "kroB150.tsp",          "kroB200.tsp",          "kroC100.opt.tour",
+    "kroC100.tsp",          "kroD100.opt.tour",     "kroD100.tsp",          "kroE100.tsp",
+    "lin105.opt.tour",      "lin105.tsp",           "lin318.tsp",           "linhp318.tsp",
+    "nrw1379.tsp",          "p654.tsp",             "pa561.opt.tour",       "pa561.tsp",
+    "pcb1173.tsp",          "pcb3038.tsp",          "pcb442.opt.tour",      "pcb442.tsp",
+    "pla33810.tsp",         "pla7397.tsp",          "pla85900.tsp",         "pr1002.opt.tour",
+    "pr1002.tsp",           "pr107.tsp",            "pr124.tsp",            "pr136.tsp",
+    "pr144.tsp",            "pr152.tsp",            "pr226.tsp",            "pr2392.opt.tour",
+    "pr2392.tsp",           "pr264.tsp",            "pr299.tsp",            "pr439.tsp",
+    "pr76.opt.tour",        "pr76.tsp",             "rat195.tsp",           "rat575.tsp",
+    "rat783.tsp",           "rat99.tsp",            "rd100.opt.tour",       "rd100.tsp",
+    "rd400.tsp",            "rl11849.tsp",          "rl1304.tsp",           "rl1323.tsp",
+    "rl1889.tsp",           "rl5915.tsp",           "rl5934.tsp",           "si1032.tsp",
+    "si175.tsp",            "si535.tsp",            "st70.opt.tour",        "st70.tsp",
+    "swiss42.tsp",          "ts225.tsp",            "tsp225.opt.tour",      "tsp225.tsp",
+    "u1060.tsp",            "u1432.tsp",            "u159.tsp",             "u1817.tsp",
+    "u2152.tsp",            "u2319.tsp",            "u574.tsp",             "u724.tsp",
+    "ulysses16.opt.tour",   "ulysses16.tsp",        "ulysses22.opt.tour",   "ulysses22.tsp",
+    "usa13509.tsp",         "vm1084.tsp",           "vm1748.tsp",           "xray.problems"
+  };
+  private static final String[] VRP_FILENAMES = new String[] {
+    "att48.vrp",            "eil13.vrp",            "eil22.vrp",            "eil23.vrp",
+    "eil30.vrp",            "eil31.vrp",            "eil33.vrp",            "eil51.vrp",
+    "eil7.vrp",             "eilA101.vrp",          "eilA76.vrp",           "eilB101.vrp",
+    "eilB76.vrp",           "eilC76.vrp",           "eilD76.vrp",           "gil262.vrp"
+  };
+
   /** This class contains only static methods and no instance is allowed. */
   private TsplibArchive() { /* no-op */ }
 
   // ==============================================================================================
   // Methods to read instance file names from resource directories
+  //
+  // Originally, methods named `extractXxxFilenames()` were meant to read the actual list
+  // of available files from the corresponding `Xxx`resource folder, however, this is quite
+  // difficult when the executable is distributed as a JAR archive. The current solution is
+  // to hard code the content of each resource folder (i.e. the filenames).
   // ==============================================================================================
 
   /**
@@ -48,7 +126,7 @@ public class TsplibArchive {
    *       </a>
    */
   public static String[] extractAtspFilenames() throws IOException {
-    return readResourceDirContent(ATSP_ARCHIVE_RESOURCE_NAME);
+    return Arrays.copyOf(ATSP_FILENAMES, ATSP_FILENAMES.length);
   }
 
   /**
@@ -65,7 +143,7 @@ public class TsplibArchive {
    *       </a>
    */
   public static String[] extractHcpFilenames() throws IOException {
-    return readResourceDirContent(HCP_ARCHIVE_RESOURCE_NAME);
+    return Arrays.copyOf(HCP_FILENAMES, HCP_FILENAMES.length);
   }
 
   /**
@@ -81,7 +159,7 @@ public class TsplibArchive {
    *       </a>
    */
   public static String[] extractSopFilenames() throws IOException {
-    return readResourceDirContent(SOP_ARCHIVE_RESOURCE_NAME);
+    return Arrays.copyOf(SOP_FILENAMES, SOP_FILENAMES.length);
   }
 
   /**
@@ -98,7 +176,7 @@ public class TsplibArchive {
    *       </a>
    */
   public static String[] extractTspFilenames() throws IOException {
-    return readResourceDirContent(TSP_ARCHIVE_RESOURCE_NAME);
+    return Arrays.copyOf(TSP_FILENAMES, TSP_FILENAMES.length);
   }
 
   /**
@@ -114,7 +192,7 @@ public class TsplibArchive {
    *       </a>
    */
   public static String[] extractVrpFilenames() throws IOException {
-    return readResourceDirContent(VRP_ARCHIVE_RESOURCE_NAME);
+    return Arrays.copyOf(VRP_FILENAMES, VRP_FILENAMES.length);
   }
 
   // ==============================================================================================
@@ -301,32 +379,5 @@ public class TsplibArchive {
    */
   public static Solutions loadTspTour(final String filename) throws IOException {
     return Solutions.from(TsplibFileData.read(getTspFileInputStream(filename)));
-  }
-
-  // ===============================================================================================
-  // Private helpers
-  // ===============================================================================================
-
-  /**
-   * Returns the content of a resource directory as an array of file names.
-   *
-   * @param dir           the resource identifier for the directory
-   * @return              an array of resource names
-   * @throws IOException  if an I/O error occurs
-   */
-  private static String[] readResourceDirContent(final String dir) throws IOException {
-    final List<String> filenames = new ArrayList<>();
-
-    try (
-      final InputStream in = TsplibArchive.class.getResourceAsStream(dir);
-      final BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"))
-    ) {
-      String fname;
-      while ((fname = br.readLine()) != null) {
-        filenames.add(fname);
-      }
-    }
-
-    return filenames.toArray(new String[0]);
   }
 }

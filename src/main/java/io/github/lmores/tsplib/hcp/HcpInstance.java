@@ -64,7 +64,7 @@ public record HcpInstance(
   private static final Set<SimpleImmutableEntry<Integer,Integer>> buildEdgeSet(
       final int[][] edgeData, final EdgeDataFormat format
   ) {
-    final Set<SimpleImmutableEntry<Integer,Integer>> edges = new HashSet<>();  // TODO: capacity
+    final Set<SimpleImmutableEntry<Integer,Integer>> edges = new HashSet<>(edgeData.length);
     switch (format) {
       case ADJ_LIST -> {
         for (final int[] adj: edgeData) {

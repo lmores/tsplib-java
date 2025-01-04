@@ -258,7 +258,7 @@ public record TsplibFileData(
           case "EDGE_DATA_SECTION" -> {
             switch (edgeDataFormat) {
               case ADJ_LIST -> {
-                final List<int[]> tmpEdges = new ArrayList<>();  // TODO? initial capacity
+                final List<int[]> tmpEdges = new ArrayList<>();
 
                 int firstNode;
                 while ((firstNode = sc.nextInt()) != -1) {
@@ -281,7 +281,7 @@ public record TsplibFileData(
               }
 
               case EDGE_LIST -> {
-                final List<int[]> tmpEdges = new ArrayList<>();  // TODO? initial capacity
+                final List<int[]> tmpEdges = new ArrayList<>();
 
                 int firstNode;
                 while ((firstNode = sc.nextInt()) != -1) {

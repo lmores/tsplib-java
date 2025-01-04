@@ -50,7 +50,7 @@ public record SopInstance(
    * @param j  the 0-based index of the other node
    * @return   true if an edge joins nodes {@code i} and {@code j}, false otherwise
    */
-  public boolean hasEdge(final int i, final int j) { // TODO
+  public boolean hasEdge(final int i, final int j) {
     final int dimension = dimension();
     return 0 <= i && i < dimension && 0 <= j && j < dimension && i != j;
   }
