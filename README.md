@@ -1,5 +1,7 @@
 # TSPLIB Java package
 
+[![Maven Central Version](https://img.shields.io/maven-central/v/io.github.lmores.tsplib/tsplib?style=for-the-badge)](https://central.sonatype.com/artifact/io.github.lmores.tsplib/tsplib)
+
 This library allows to read files in [TSPLIB](http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95) format.
 All types of problems in TSPLIB format are supported, except those with extension `.problems`.
 
