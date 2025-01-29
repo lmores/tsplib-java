@@ -90,7 +90,7 @@ public class TestTsplibArchive {
     final String[] filenames = Assertions.assertDoesNotThrow(
         () -> TsplibArchive.extractTspFilenames()
     );
-    Assertions.assertEquals(144, filenames.length);
+    Assertions.assertEquals(145, filenames.length);
 
     int instanceCount = 0;
     int tourCount = 0;
@@ -121,7 +121,7 @@ public class TestTsplibArchive {
       }
     }
     Assertions.assertEquals(111, instanceCount);
-    Assertions.assertEquals(32, tourCount);
+    Assertions.assertEquals(33, tourCount);
   }
 
   @Test
